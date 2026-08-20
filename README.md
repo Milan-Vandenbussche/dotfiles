@@ -11,7 +11,7 @@ wofi/.config/wofi
 kitty/.config/kitty
 ```
 
-There is no GNU Stow dependency. `bin/bootstrap.sh` creates normal symlinks from these package folders into `$HOME`.
+GNU Stow manages the symlinks. Each top-level package folder contains paths relative to `$HOME`, so `waybar/.config/waybar` becomes `~/.config/waybar` when stowed.
 
 ## What This Restores
 
@@ -44,10 +44,16 @@ bin/bootstrap.sh --packages-only
 bin/bootstrap.sh --host current-desktop
 ```
 
-If a target file already exists, the script moves it to:
+Stow will refuse to replace conflicting non-symlink files. Back up or move those files before running the configuration step. The separate generated Steam desktop file and Waywall checkout use the backup directory:
 
 ```text
 ~/.local/state/dotfiles-backup/<timestamp>/
+```
+
+To apply only configuration symlinks after GNU Stow is installed:
+
+```bash
+bin/bootstrap.sh --configs-only
 ```
 
 ## Host-Specific Hyprland Config

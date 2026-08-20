@@ -20,6 +20,7 @@ PACKAGES=(
   shell
   uwsm
   waybar
+  wallpaper
   wofi
 )
 
@@ -46,6 +47,13 @@ install_official_packages() {
   fi
 }
 
+ensure_stow() {
+  if ! command -v stow >/dev/null 2>&1; then
+    echo "GNU Stow is required for config installation. Install the stow package first." >&2
+    return 1
+  fi
+}
+
 ensure_yay() {
   if command -v yay >/dev/null 2>&1; then
     return
@@ -69,43 +77,6 @@ install_aur_packages() {
   fi
 }
 
-link_item() {
-  local source="$1"
-  local target="$2"
-  local rel="${target#"$HOME"/}"
-
-  mkdir -p -- "$(dirname -- "$target")"
-
-  if [[ -L "$target" ]] && [[ "$(readlink -f -- "$target")" == "$(readlink -f -- "$source")" ]]; then
-    return
-  fi
-
-  if [[ -e "$target" || -L "$target" ]]; then
-    local backup="$BACKUP_ROOT/$rel"
-    mkdir -p -- "$(dirname -- "$backup")"
-    mv -- "$target" "$backup"
-    echo "Backed up $target to $backup"
-  fi
-
-  ln -s -- "$source" "$target"
-}
-
-link_package() {
-  local package="$1"
-  local source_root="$REPO_ROOT/$package"
-
-  while IFS= read -r -d '' source; do
-    local rel="${source#"$source_root"/}"
-    local target="$HOME/$rel"
-
-    if [[ -d "$source" && ! -L "$source" ]]; then
-      mkdir -p -- "$target"
-    else
-      link_item "$source" "$target"
-    fi
-  done < <(find "$source_root" -mindepth 1 -print0)
-}
-
 select_host() {
   local host_conf="$REPO_ROOT/hosts/$HOST_PROFILE/hypr/host.conf"
   local package_host_conf="$REPO_ROOT/hypr/.config/hypr/host.conf"
@@ -116,23 +87,6 @@ select_host() {
   fi
 
   ln -sfn -- "../../../hosts/$HOST_PROFILE/hypr/host.conf" "$package_host_conf"
-}
-
-link_host_files() {
-  local source_root="$REPO_ROOT/hosts/$HOST_PROFILE/.local"
-
-  [[ -d "$source_root" ]] || return
-
-  while IFS= read -r -d '' source; do
-    local rel="${source#"$source_root"/}"
-    local target="$HOME/.local/$rel"
-
-    if [[ -d "$source" && ! -L "$source" ]]; then
-      mkdir -p -- "$target"
-    else
-      link_item "$source" "$target"
-    fi
-  done < <(find "$source_root" -mindepth 1 -print0)
 }
 
 install_steam_desktop() {
@@ -152,12 +106,6 @@ install_steam_desktop() {
 
   mkdir -p -- "$(dirname -- "$target")"
   sed "s|@HOME@|$HOME|g" "$template" > "$target"
-}
-
-install_wallpaper() {
-  link_item \
-    "$REPO_ROOT/assets/wallpapers/wallhaven-6l5emq.png" \
-    "$HOME/.local/share/wallpapers/wallhaven-6l5emq.png"
 }
 
 install_waywall_config() {
@@ -191,14 +139,14 @@ install_waywall_config() {
 }
 
 install_dotfiles() {
+  ensure_stow
   select_host
-  install_wallpaper
 
   for package in "${PACKAGES[@]}"; do
-    link_package "$package"
+    stow --dir="$REPO_ROOT" --target="$HOME" --restow "$package"
   done
 
-  link_host_files
+  stow --dir="$REPO_ROOT/hosts/$HOST_PROFILE" --target="$HOME" --restow host-local
   install_steam_desktop
   install_waywall_config
 }

@@ -71,6 +71,7 @@ sddm
 slurp
 smartmontools
 steam
+stow
 sudo
 system-config-printer
 tk
