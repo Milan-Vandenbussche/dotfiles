@@ -1,0 +1,75 @@
+/* Catppuccin Mocha — wofi
+   Base:      #1e1e2e  — main background
+   Mantle:    #181825  — deeper background / input bg
+   Surface 0: #313244  — surface / hover
+   Overlay 2: #7f849c  — subtle / placeholder
+   Text:      #cdd6f4  — body copy
+   Subtext 1: #bac2de  — labels
+   Mauve:     #cba6f7  — accent (borders, selected marker)
+*/
+
+window {
+    margin: 0px;
+    border: 1px solid #6c7086;
+    background-color: #1e1e2e;
+    border-radius: 12px;
+}
+
+#input {
+    padding: 8px 16px;
+    margin: 10px 10px 4px 10px;
+    border: 1px solid #313244;
+    border-radius: 8px;
+    background-color: #181825;
+    color: #cdd6f4;
+    font-weight: normal;
+    outline: none;
+}
+
+#input:focus {
+    border-color: #6c7086;
+}
+
+#outer-box {
+    margin: 0px;
+    padding: 4px;
+    background-color: transparent;
+}
+
+#inner-box {
+    margin: 0px;
+    padding: 4px;
+    background-color: transparent;
+}
+
+#scroll {
+    margin: 4px 0px;
+}
+
+#img {
+    margin-right: 10px;
+}
+
+#entry {
+    margin: 2px 4px;
+    padding: 6px 10px;
+    border-radius: 8px;
+    background-color: transparent;
+    color: #bac2de;
+    font-weight: normal;
+}
+
+#entry:hover {
+    background-color: #313244;
+    color: #cdd6f4;
+}
+
+#entry:selected {
+    background-color: #313244;
+    border-left: 2px solid #6c7086;
+    color: #cdd6f4;
+}
+
+#text {
+    color: inherit;
+}

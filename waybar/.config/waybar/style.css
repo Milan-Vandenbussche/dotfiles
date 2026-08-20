@@ -1,0 +1,179 @@
+/* =============================================================================
+   Catppuccin Mocha palette reference
+   Base      #1e1e2e   Mantle    #181825   Crust     #11111b
+   Surface0  #313244   Surface1  #45475a   Surface2  #585b70
+   Overlay0  #6c7086   Overlay1  #7f849c   Overlay2  #9399b2
+   Subtext1  #bac2de   Text      #cdd6f4
+   Rosewater #f5e0dc   Flamingo  #f2cdcd   Pink      #f38ba8
+   Mauve     #cba6f7   Red       #f38ba8   Maroon    #eba0ac
+   Peach     #fab387   Yellow    #f9e2af   Green     #a6e3a1
+   Teal      #94e2d5   Sky       #89dceb   Sapphire  #74c7ec
+   Blue      #89b4fa   Lavender  #b4befe
+   ============================================================================= */
+
+* {
+  background-color: rgba(30, 30, 46, 0.92); /* Base with slight transparency */
+  color: #cdd6f4;                            /* Text */
+  border: none;
+  border-radius: 0;
+  min-height: 0;
+  font-family: 'JetBrainsMono Nerd Font';
+  font-size: 12px;
+}
+
+/* ── Layout margins ─────────────────────────────────────────────────────────── */
+
+.modules-left {
+  margin-left: 8px;
+}
+
+.modules-right {
+  margin-right: 8px;
+}
+
+/* ── Workspace dots ─────────────────────────────────────────────────────────── */
+/*
+   Logic:
+   - Only workspaces with open windows (or currently active) are shown
+     because active-only: false + no persistent-workspaces means empty
+     workspaces vanish when you leave them.
+   - "default" class  → occupied, not focused → Overlay2 (muted dot)
+   - "active" class   → currently focused     → Mauve dimmed (darker anchor)
+   This gives active a *darker/richer* feel vs the softer occupied dots.
+*/
+
+#workspaces {
+  transition: all 150ms ease-in-out;
+}
+
+#workspaces button {
+  all: initial;
+  font-family: 'JetBrainsMono Nerd Font';
+  font-size: 10px;
+  transition: all 90ms ease-in-out;
+  padding: 0 5px;
+  margin: 0 1px;
+  min-width: 9px;
+  color: #9399b2;          /* Overlay2 — occupied but not active */
+  background: transparent;
+}
+
+#workspaces button.active {
+  transition: all 90ms ease-in-out;
+  color: #9373b8;          /* Mauve darkened ~20% — current workspace anchor */
+}
+
+/* Hover: subtle brightening toward full Mauve */
+#workspaces button:hover {
+  color: #cba6f7;          /* Mauve */
+  background: transparent;
+  box-shadow: none;
+}
+
+/* ── Stats (cpu / memory / disk) ────────────────────────────────────────────── */
+
+#cpu,
+#memory,
+#disk {
+  color: #bac2de;          /* Subtext1 — slightly muted vs pure Text */
+  min-width: 12px;
+  margin: 0 7.5px;
+}
+
+/* ── Gamemode toggle ────────────────────────────────────────────────────────── */
+
+#custom-gamemode {
+  color: #bac2de;          /* Subtext1 */
+  margin-left: 2px;
+  margin-right: 8px;
+}
+
+/* ── Audio ──────────────────────────────────────────────────────────────────── */
+
+#pulseaudio {
+  color: #bac2de;          /* Subtext1 */
+  margin-right: 4px;
+  margin-left: 1px;
+}
+
+/* ── System tray ────────────────────────────────────────────────────────────── */
+
+#tray {
+  margin-right: 4px;
+}
+
+#custom-expand-icon {
+  color: #7f849c;          /* Overlay1 — subtle expand arrow */
+  margin-right: 10px;
+}
+
+/* ── Bluetooth ──────────────────────────────────────────────────────────────── */
+
+#bluetooth {
+  color: #bac2de;          /* Subtext1 */
+  margin-right: 2px;
+}
+
+/* ── Network ────────────────────────────────────────────────────────────────── */
+
+#network {
+  color: #bac2de;          /* Subtext1 */
+  margin-right: 10px;
+  margin-left: 6px;
+}
+
+/* ── Separator ──────────────────────────────────────────────────────────────── */
+
+#custom-sep {
+  color: rgba(127, 132, 156, 0.35);  /* Overlay1 at low opacity */
+  margin: 0 2px;
+}
+
+/* ── Clock ──────────────────────────────────────────────────────────────────── */
+
+#clock {
+  color: #cdd6f4;          /* Text — most prominent right-side element */
+  margin-left: 8px;
+}
+
+/* ── Power button ───────────────────────────────────────────────────────────── */
+
+#custom-power {
+  color: #6c7086;          /* Overlay0 — intentionally muted, it's a dangerous button */
+  margin-left: 8px;
+  margin-right: 4px;
+  font-size: 13px;
+  transition: color 120ms ease-in-out;
+}
+
+#custom-power:hover {
+  color: #f38ba8;          /* Red — clear danger signal on hover only */
+}
+
+/* ── Active window title (center) ───────────────────────────────────────────── */
+
+#window {
+  color: #7f849c;          /* Overlay1 — understated, not competing with clock */
+}
+
+/* ── Tooltips ───────────────────────────────────────────────────────────────── */
+
+tooltip {
+  background-color: #181825;   /* Mantle — slightly darker than Base */
+  color: #cdd6f4;              /* Text */
+  padding: 4px;
+  border-radius: 6px;
+  border: 1px solid #313244;   /* Surface0 border for definition */
+}
+
+/* ── Tray group child items ─────────────────────────────────────────────────── */
+
+.tray-group-item {
+  background-color: rgba(30, 30, 46, 0.92);
+}
+
+/* ── Utility ────────────────────────────────────────────────────────────────── */
+
+.hidden {
+  opacity: 0;
+}

@@ -1,0 +1,6 @@
+[Desktop Entry]
+Exec=brave
+MimeType=text/markdown;
+Name=brave
+NoDisplay=true
+Type=Application

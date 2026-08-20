@@ -1,0 +1,7 @@
+brave-bin
+catppuccin-gtk-theme-mocha
+minecraft-ttf-git
+obs-pipewire-audio-capture
+r8125-dkms
+waywall-working-git
+yay

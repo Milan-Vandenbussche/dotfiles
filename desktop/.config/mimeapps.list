@@ -1,0 +1,18 @@
+[Added Associations]
+image/jpeg=org.kde.gwenview.desktop;brave-browser.desktop;
+image/png=gwenview.desktop;
+text/markdown=brave.desktop;
+video/mp4=gwenview-2.desktop;
+video/x-matroska=gwenview-3.desktop;
+
+[Default Applications]
+image/jpeg=org.kde.gwenview.desktop;
+image/png=gwenview.desktop;
+text/html=brave-browser.desktop
+text/markdown=brave.desktop;
+video/mp4=gwenview-2.desktop;
+video/x-matroska=gwenview-3.desktop;
+x-scheme-handler/about=brave-browser.desktop
+x-scheme-handler/http=brave-browser.desktop
+x-scheme-handler/https=brave-browser.desktop
+x-scheme-handler/unknown=brave-browser.desktop
