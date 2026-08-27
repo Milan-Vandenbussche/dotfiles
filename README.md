@@ -44,7 +44,7 @@ bin/bootstrap.sh --packages-only
 bin/bootstrap.sh --host current-desktop
 ```
 
-Stow will refuse to replace conflicting non-symlink files. Back up or move those files before running the configuration step. The separate generated Steam desktop file and Waywall checkout use the backup directory:
+The bootstrap backs up conflicting live files before asking Stow to create the links. The backup directory is:
 
 ```text
 ~/.local/state/dotfiles-backup/<timestamp>/

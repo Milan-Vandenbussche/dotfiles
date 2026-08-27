@@ -54,6 +54,29 @@ ensure_stow() {
   fi
 }
 
+backup_stow_conflicts() {
+  local package_dir="$1"
+  local package_name="$2"
+
+  while IFS= read -r -d '' source; do
+    local rel="${source#"$package_dir"/}"
+    local target="$HOME/$rel"
+
+    if [[ ! -e "$target" && ! -L "$target" ]]; then
+      continue
+    fi
+
+    if [[ -L "$target" ]] && [[ "$(readlink -f -- "$target")" == "$(readlink -f -- "$source")" ]]; then
+      continue
+    fi
+
+    local backup="$BACKUP_ROOT/$rel"
+    mkdir -p -- "$(dirname -- "$backup")"
+    mv -- "$target" "$backup"
+    echo "Backed up $target to $backup before stowing $package_name"
+  done < <(find "$package_dir" \( -type f -o -type l \) -print0)
+}
+
 ensure_yay() {
   if command -v yay >/dev/null 2>&1; then
     return
@@ -143,9 +166,11 @@ install_dotfiles() {
   select_host
 
   for package in "${PACKAGES[@]}"; do
+    backup_stow_conflicts "$REPO_ROOT/$package" "$package"
     stow --dir="$REPO_ROOT" --target="$HOME" --restow "$package"
   done
 
+  backup_stow_conflicts "$REPO_ROOT/hosts/$HOST_PROFILE/host-local" "host-local"
   stow --dir="$REPO_ROOT/hosts/$HOST_PROFILE" --target="$HOME" --restow host-local
   install_steam_desktop
   install_waywall_config
