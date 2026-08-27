@@ -1,5 +1,5 @@
 amd-ucode
-swww
+awww
 base
 base-devel
 bluez
