@@ -76,7 +76,7 @@ That file contains hardware-specific settings such as monitor names, refresh rat
 DOTFILES_HOST=<new-host> bin/bootstrap.sh --configs-only
 ```
 
-The Steam launcher is also host-specific because the current desktop has GPU-selection environment variables. Copy and adapt `hosts/current-desktop/.local/bin/steam-launch.sh` for another computer, or omit it to use Steam's standard launcher.
+The Steam launcher is also host-specific because the current desktop has GPU-selection environment variables. Copy and adapt `hosts/current-desktop/host-local/.local/bin/steam-launch.sh` for another computer, or omit it to use Steam's standard launcher.
 
 ## Refresh Package Lists
 

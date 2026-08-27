@@ -10,6 +10,7 @@ PACKAGES=(
   btop
   copyq
   desktop
+  dolphin
   fastfetch
   git
   htop
