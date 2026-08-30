@@ -53,6 +53,14 @@ install_official_packages() {
   fi
 }
 
+
+ensure_stow() {
+  if ! command -v stow >/dev/null 2>&1; then
+    echo "GNU Stow is required for config installation. Install the stow package first." >&2
+    return 1
+  fi
+}
+
 backup_stow_conflicts() {
   local package_dir="$1"
   local package_name="$2"
@@ -65,7 +73,7 @@ backup_stow_conflicts() {
       continue
     fi
 
-    if [[ -L "$target" ]] && [[ "$(readlink -f -- "$target")" == "$(readlink -f -- "$source")" ]]; then
+    if [[ -e "$target" ]] && [[ "$(readlink -f -- "$target")" == "$(readlink -f -- "$source")" ]]; then
       continue
     fi
 
@@ -171,12 +179,12 @@ install_dotfiles() {
 
   for package in "${PACKAGES[@]}"; do
     backup_stow_conflicts "$REPO_ROOT/$package" "$package"
-    stow --dir="$REPO_ROOT" --target="$HOME" --restow "$package"
+        stow --dir="$REPO_ROOT" --target="$HOME" --restow --no-folding "$package"
   done
 
     if [[ -d "$REPO_ROOT/hosts/$HOST_PROFILE/host-local" ]]; then
     backup_stow_conflicts "$REPO_ROOT/hosts/$HOST_PROFILE/host-local" "host-local"
-    stow --dir="$REPO_ROOT/hosts/$HOST_PROFILE" --target="$HOME" --restow host-local
+    stow --dir="$REPO_ROOT/hosts/$HOST_PROFILE" --target="$HOME" --restow --no-folding host-local
   fi
   install_steam_desktop
   install_waywall_config
