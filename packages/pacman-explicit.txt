@@ -1,4 +1,3 @@
-amd-ucode
 awww
 base
 base-devel
@@ -34,7 +33,6 @@ kde-cli-tools
 kitty
 lib32-gamemode
 lib32-mangohud
-lib32-vulkan-radeon
 libpulse
 libreoffice-fresh
 linux
@@ -80,7 +78,6 @@ ttf-jetbrains-mono-nerd
 unzip
 uwsm
 vim
-vulkan-radeon
 waybar
 wget
 wireless_tools
@@ -92,8 +89,6 @@ wofi
 wpa_supplicant
 xdg-desktop-portal-hyprland
 xdg-utils
-xf86-video-amdgpu
-xf86-video-ati
 xorg-server
 xorg-xinit
 zram-generator

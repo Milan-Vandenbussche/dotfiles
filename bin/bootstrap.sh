@@ -36,6 +36,7 @@ read_manifest() {
 
 install_official_packages() {
   local manifest="$REPO_ROOT/packages/pacman-explicit.txt"
+  local host_manifest="$REPO_ROOT/hosts/$HOST_PROFILE/packages/pacman-extra.txt"
 
   if ! command -v pacman >/dev/null 2>&1; then
     echo "pacman was not found; this bootstrap is intended for Arch Linux." >&2
@@ -43,15 +44,12 @@ install_official_packages() {
   fi
 
   mapfile -t packages < <(read_manifest "$manifest")
+  if [[ -f "$host_manifest" ]]; then
+    mapfile -t host_packages < <(read_manifest "$host_manifest")
+    packages+=("${host_packages[@]}")
+  fi
   if ((${#packages[@]})); then
     sudo pacman -S --needed "${packages[@]}"
-  fi
-}
-
-ensure_stow() {
-  if ! command -v stow >/dev/null 2>&1; then
-    echo "GNU Stow is required for config installation. Install the stow package first." >&2
-    return 1
   fi
 }
 
@@ -92,10 +90,15 @@ ensure_yay() {
 
 install_aur_packages() {
   local manifest="$REPO_ROOT/packages/aur-explicit.txt"
+  local host_manifest="$REPO_ROOT/hosts/$HOST_PROFILE/packages/aur-extra.txt"
 
   ensure_yay
 
   mapfile -t packages < <(read_manifest "$manifest")
+  if [[ -f "$host_manifest" ]]; then
+    mapfile -t host_packages < <(read_manifest "$host_manifest")
+    packages+=("${host_packages[@]}")
+  fi
   if ((${#packages[@]})); then
     yay -S --needed "${packages[@]}"
   fi
@@ -171,8 +174,10 @@ install_dotfiles() {
     stow --dir="$REPO_ROOT" --target="$HOME" --restow "$package"
   done
 
-  backup_stow_conflicts "$REPO_ROOT/hosts/$HOST_PROFILE/host-local" "host-local"
-  stow --dir="$REPO_ROOT/hosts/$HOST_PROFILE" --target="$HOME" --restow host-local
+    if [[ -d "$REPO_ROOT/hosts/$HOST_PROFILE/host-local" ]]; then
+    backup_stow_conflicts "$REPO_ROOT/hosts/$HOST_PROFILE/host-local" "host-local"
+    stow --dir="$REPO_ROOT/hosts/$HOST_PROFILE" --target="$HOME" --restow host-local
+  fi
   install_steam_desktop
   install_waywall_config
 }
