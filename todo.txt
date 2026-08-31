@@ -1,0 +1,27 @@
+2.	config sddm minimal theme; just a background picture is shown when first booted, 
+	then when the user presses anything the background goes out of focus (can still be 
+	seen but with dark shade) a user icon with a bar for the password appears, when user 
+	types the password gets filled in, once enter is presses a login attempt is made. 
+	very minimalistic.
+
+2.2	update power button to waybar to shutdown/reboot not to use wofi but make hyprland 
+	hovering window
+
+3.	configure kitty, make neofetch smaller -> remove usless info, change icon to smth 
+	custom. add transparancy to terminal.
+
+4.	nvim setup, colorcode when writing code, show how far lines are at the top and bottom 		from curret line etc. get cli inside of nvim if possible, search multiple dir 
+	(fuzzy find). have multiple pages open.
+
+10.	custom cursor
+
+12.	make grub auto start run not default linux but the one with the correct motherboard 
+	header (the one with linux-zen)
+
+13.	config notification daemon
+
+14.	discover how to make applications pop up not in tiling mode but hover above, for 
+	settings, prism launcher, audio settings, steam. (like steam login page)
+
+17. 	when i press super + shift + arrow, i want it to move the selected 'tile' in the 
+	direction of the arrow to be able to move around apps without a mouse.
