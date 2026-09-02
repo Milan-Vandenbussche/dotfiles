@@ -24,3 +24,5 @@
 
 17. 	when i press super + shift + arrow, i want it to move the selected 'tile' in the 
 	direction of the arrow to be able to move around apps without a mouse.
+
+18.	config grub, 1 for desktop with win/linux split, 1 for laptop idk yet
