@@ -7,8 +7,7 @@
 2.2	update power button to waybar to shutdown/reboot not to use wofi but make hyprland 
 	hovering window
 
-3.	configure kitty, make neofetch smaller -> remove usless info, change icon to smth 
-	custom. add transparancy to terminal.
+3.	add transparancy to terminal.
 
 4.	nvim setup, colorcode when writing code, show how far lines are at the top and bottom 		from curret line etc. get cli inside of nvim if possible, search multiple dir 
 	(fuzzy find). have multiple pages open.
