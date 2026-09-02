@@ -4,8 +4,7 @@
 	types the password gets filled in, once enter is presses a login attempt is made. 
 	very minimalistic.
 
-2.2	update power button to waybar to shutdown/reboot not to use wofi but make hyprland 
-	hovering window
+2.2	update waybar power button to not use wofi but make hyprland hovering window
 
 3.	add transparancy to terminal.
 
@@ -25,4 +24,8 @@
 17. 	when i press super + shift + arrow, i want it to move the selected 'tile' in the 
 	direction of the arrow to be able to move around apps without a mouse.
 
-18.	config grub, 1 for desktop with win/linux split, 1 for laptop idk yet
+18.	config grub, 1. for desktop with win/linux split, 1. for laptop idk yet
+
+19.	add btop button to waybar
+
+20.	replace current audio gui with better one or config this one.
