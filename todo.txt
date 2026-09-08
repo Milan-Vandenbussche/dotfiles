@@ -1,31 +1,33 @@
-2.	add sddm conf to dotfiles (dont forget dependencies!)
+1.	add sddm conf to dotfiles (dont forget dependencies!)
 
-2.2	update waybar power button to not use wofi but make hyprland hovering window
+2.	update waybar power button to not use wofi but make hyprland hovering window
 
 3.	add transparancy to terminal.
 
 4.	nvim setup, colorcode when writing code, show how far lines are at the top and bottom 		from curret line etc. get cli inside of nvim if possible, search multiple dir 
 	(fuzzy find). have multiple pages open.
 
-10.	custom cursor
+5.	custom cursor
 
-12.	make grub auto start run not default linux but the one with the correct motherboard 
+6.	make grub auto start run not default linux but the one with the correct motherboard 
 	header (the one with linux-zen)
 
-13.	config notification daemon
+7.	config notification daemon
 
-14.	discover how to make applications pop up not in tiling mode but hover above, for 
+8.	discover how to make applications pop up not in tiling mode but hover above, for 
 	settings, prism launcher, audio settings, steam. (like steam login page)
 
-17. 	when i press super + shift + arrow, i want it to move the selected 'tile' in the 
+9. 	when i press super + shift + arrow, i want it to move the selected 'tile' in the 
 	direction of the arrow to be able to move around apps without a mouse.
 
-18.	config grub, 1. for desktop with win/linux split, 1. for laptop idk yet
+10.	config grub, 1. for desktop with win/linux split, 1. for laptop idk yet
 
-19.	add btop button to waybar
+11.	add btop button to waybar
 
-20.	replace current audio gui with better one or config this one.
+12.	replace current audio gui with better one or config this one.
 
-21. get cli anime watcher (ani-cli) -> https://github.com/pystardust/ani-cli
+13. get cli anime watcher (ani-cli) -> https://github.com/pystardust/ani-cli
 
-22. fix fastfetch pacman packages downloaded number hardcode and name displayed
+14. fix fastfetch pacman packages downloaded number hardcode and name displayed
+
+15. discover how to nore tiles between desktops (the thing i make with super + number)
