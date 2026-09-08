@@ -1,8 +1,4 @@
-2.	config sddm minimal theme; just a background picture is shown when first booted, 
-	then when the user presses anything the background goes out of focus (can still be 
-	seen but with dark shade) a user icon with a bar for the password appears, when user 
-	types the password gets filled in, once enter is presses a login attempt is made. 
-	very minimalistic.
+2.	add sddm conf to dotfiles (dont forget dependencies!)
 
 2.2	update waybar power button to not use wofi but make hyprland hovering window
 
