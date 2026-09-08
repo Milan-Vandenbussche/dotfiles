@@ -1,0 +1,33 @@
+/* Catppuccin Mocha - yad power menu */
+window {
+    background-color: #1e1e2e; /* base */
+    color: #cdd6f4;            /* text */
+}
+
+button {
+    background-color: #313244; /* surface0 */
+    color: #cdd6f4;            /* text */
+    border: 1px solid #45475a; /* surface1 */
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-weight: 600;
+    transition: background-color 150ms ease, border-color 150ms ease;
+}
+
+button:hover {
+    background-color: #45475a; /* surface1 */
+}
+
+button:active {
+    background-color: #585b70; /* surface2 */
+}
+
+/* Power Off (leftmost button) - destructive accent */
+button:first-child:hover {
+    border-color: #f38ba8; /* red */
+}
+
+/* Reboot (rightmost button) - neutral accent */
+button:last-child:hover {
+    border-color: #89b4fa; /* blue */
+}

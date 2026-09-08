@@ -1,13 +1,16 @@
 #!/bin/bash
-chosen=$(printf "  Power Off\n  Reboot" | wofi --dmenu \
-  --prompt "" \
-  --style ~/.config/wofi/style.css \
-  --width 160 \
-  --height 105 \
-  --cache-file /dev/null \
-  --no-actions)
+yad --title="Power Menu" \
+  --button="Power Off":0 \
+  --button="Reboot":1 \
+  --buttons-layout=spread \
+  --width=160 --height=1 \
+  --center \
+  --undecorated \
+  --fixed \
+  --css="$HOME/.config/yad/powermenu.css"
 
-case "$chosen" in
-  "  Power Off") systemctl poweroff ;;
-  "  Reboot")    systemctl reboot ;;
+case $? in
+  0) systemctl poweroff ;;
+  1) systemctl reboot ;;
+  # 252 (Escape/closed) and anything else: do nothing
 esac
