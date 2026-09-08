@@ -29,3 +29,7 @@
 19.	add btop button to waybar
 
 20.	replace current audio gui with better one or config this one.
+
+21. get cli anime watcher (ani-cli) -> https://github.com/pystardust/ani-cli
+
+22. fix fastfetch pacman packages downloaded number hardcode and name displayed
