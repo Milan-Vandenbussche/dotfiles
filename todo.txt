@@ -3,11 +3,6 @@
 3.	nvim setup, colorcode when writing code, show how far lines are at the top and bottom 		from curret line etc. get cli inside of nvim if possible, search multiple dir 
 	(fuzzy find). have multiple pages open.
 
-4.	custom cursor
-
-5.	make grub auto start run not default linux but the one with the correct motherboard 
-	header (the one with linux-zen)
-
 6.	config notification daemon
 
 7.	discover how to make applications pop up not in tiling mode but hover above, for 
@@ -26,4 +21,4 @@
 
 13. fix fastfetch pacman packages downloaded number hardcode and name displayed
 
-14. discover how to nore tiles between desktops (the thing i make with super + number)
+14. discover how to move tiles between desktops (the thing i make with super + number)
