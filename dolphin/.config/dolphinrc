@@ -1,9 +1,21 @@
+[ContentDisplay]
+UsePermissionsFormat=CombinedFormat
+
+[ContextMenu]
+ShowMoveToOtherSplitView=false
+
 [DetailsMode]
 PreviewSize=112
 
 [General]
+BrowseThroughArchives=true
+ShowToolTips=true
 Version=202
 ViewPropsTimestamp=2026,3,28,18,29,34.43
+
+[IconsMode]
+IconSize=22
+TextWidthIndex=0
 
 [KFileDialog Settings]
 Places Icons Auto-resize=false
@@ -15,5 +27,11 @@ MenuBar=Disabled
 [Notification Messages]
 ConfirmRenameFileType=false
 
+[PreviewSettings]
+Plugins=appimagethumbnail,audiothumbnail,glycin-heif,comicbookthumbnail,cursorthumbnail,djvuthumbnail,ebookthumbnail,exrthumbnail,directorythumbnail,imagethumbnail,glycin-image-rs,jpegthumbnail,glycin-jxl,kraorathumbnail,windowsexethumbnail,windowsimagethumbnail,opendocumentthumbnail,glycin-svg,svgthumbnail,textthumbnail
+
 [Search]
 Location=Everywhere
+
+[UiSettings]
+ColorScheme=BreezeDark
