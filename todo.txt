@@ -1,5 +1,7 @@
 1.	add sddm conf to dotfiles (dont forget dependencies!)
 
+2.	config dolphin or find better file manager
+
 3.	nvim setup, colorcode when writing code, show how far lines are at the top and bottom 		from curret line etc. get cli inside of nvim if possible, search multiple dir 
 	(fuzzy find). have multiple pages open.
 
