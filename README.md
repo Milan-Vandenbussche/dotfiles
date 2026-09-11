@@ -104,3 +104,12 @@ Create the private GitHub repo with:
 ```bash
 gh repo create dotfiles --private --source=. --remote=origin --push
 ```
+
+
+### FIX HYPRLAND PLUGIN ON PACKAGE UPDATE
+
+
+hyprpm purge-cache
+hyprpm add https://github.com/micha4w/Hypr-DarkWindow
+hyprpm enable Hypr-DarkWindow
+hyprpm reload
