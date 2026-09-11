@@ -14,6 +14,7 @@
     "bluetooth",
     "network",
     "pulseaudio",
+    "custom/systemmanager",
     "custom/sep",
     "clock",
     "custom/sep",
@@ -78,6 +79,13 @@
     "format-icons": {
       "default": ["󰕿", "󰖀", "󰕾"]
     }
+  },
+
+  "custom/systemmanager": {
+    "format": "󰍛",
+    "on-click": "kitty -e btop",
+    "tooltip": true,
+    "tooltip-format": "Open btop"
   },
 
   "group/tray-expander": {

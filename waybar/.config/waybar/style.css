@@ -96,6 +96,14 @@
   margin-left: 1px;
 }
 
+/* ── System manager (btop) ──────────────────────────────────────────────────── */
+
+#custom-systemmanager {
+  color: #bac2de;          /* Subtext1 — matches other icon-only modules */
+  margin-left: 6px;
+  margin-right: 8px;
+}
+
 /* ── System tray ────────────────────────────────────────────────────────────── */
 
 #tray {
