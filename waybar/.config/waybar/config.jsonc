@@ -32,7 +32,7 @@
     "format": "{icon}",
     "format-icons": {
       "active": "●",
-      "default": "●",
+      "default": "○",
       "empty": "○"
     },
     // persistent-workspaces intentionally omitted — we want dynamic dots only
