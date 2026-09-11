@@ -64,7 +64,7 @@
         },
         {
             "type": "packages",
-            "format": "{} (pacman)",
+            "format": "{all} (pacman)",
             "key": " ",
             "keyColor": "34"
         },

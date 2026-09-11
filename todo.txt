@@ -1,22 +1,22 @@
 1.	add sddm conf to dotfiles (dont forget dependencies!)
 
-3.	nvim setup, colorcode when writing code, show how far lines are at the top and bottom 		from curret line etc. get cli inside of nvim if possible, search multiple dir 
+2.	nvim setup, colorcode when writing code, show how far lines are at the top and bottom 		from curret line etc. get cli inside of nvim if possible, search multiple dir 
 	(fuzzy find). have multiple pages open.
 
-6.	config notification daemon
+3.	config notification daemon
 
-7.	discover how to make applications pop up not in tiling mode but hover above, for 
+4.	discover how to make applications pop up not in tiling mode but hover above, for 
 	settings, prism launcher, audio settings, steam. (like steam login page)
 
-8. 	when i press super + shift + arrow, i want it to move the selected 'tile' in the 
+5. 	when i press super + shift + arrow, i want it to move the selected 'tile' in the 
 	direction of the arrow to be able to move around apps without a mouse.
 
-9.	config grub, 1. for desktop with win/linux split, 1. for laptop idk yet
+6.	config grub, 1. for desktop with win/linux split, 1. for laptop idk yet
 
-11.	replace current audio gui with better one or config this one.
+7.	replace current audio gui with better one or config this one.
 
-12. get cli anime watcher (ani-cli) -> https://github.com/pystardust/ani-cli
+8. get cli anime watcher (ani-cli) -> https://github.com/pystardust/ani-cli
 
-13. fix fastfetch pacman packages downloaded number hardcode and name displayed
+9. discover how to move tiles between desktops (the thing i make with super + number)
 
-14. discover how to move tiles between desktops (the thing i make with super + number)
+10. improve wofi to be able to do math in it and use it to search strate to browser (brave)
