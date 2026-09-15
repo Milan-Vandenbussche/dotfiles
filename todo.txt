@@ -6,15 +6,12 @@
 3.	discover how to make applications pop up not in tiling mode but hover above, for 
 	settings, prism launcher, audio settings, steam. (like steam login page)
 
-4. 	when i press super + shift + arrow, i want it to move the selected 'tile' in the 
-	direction of the arrow to be able to move around apps without a mouse.
+4.	config grub, 1. for desktop with win/linux split, 1. for laptop idk yet
 
-5.	config grub, 1. for desktop with win/linux split, 1. for laptop idk yet
+5.	replace current audio gui with better one or config this one.
 
-6.	replace current audio gui with better one or config this one.
+6. get cli anime watcher (ani-cli) -> https://github.com/pystardust/ani-cli
 
-7. get cli anime watcher (ani-cli) -> https://github.com/pystardust/ani-cli
+7. discover how to move tiles between desktops (the thing i make with super + number)
 
-8. discover how to move tiles between desktops (the thing i make with super + number)
-
-9. improve wofi to be able to do math in it and use it to search strate to browser (brave)
+8. improve wofi to be able to do math in it and use it to search strate to browser (brave)
