@@ -12,4 +12,13 @@
 
 6.	get cli anime watcher (ani-cli) -> https://github.com/pystardust/ani-cli
 
-8.	improve wofi to be able to do math in it and use it to search strate to browser (brave)
+8.	improve wofi to be able to do math in it and use it to search strate to 
+	browser (brave)
+
+9. 	fuzzy find files in terminal aka. better cd (can see/go to files outside of 
+	current dir)
+
+10.	color scheme for terminal text
+
+11.	be abke to select system themes that change all the config styles to match 
+	(need to make multiple seperate configs)
