@@ -22,3 +22,5 @@
 
 11.	be abke to select system themes that change all the config styles to match 
 	(need to make multiple seperate configs)
+
+12.	make file Manager remember last opened dir after close.
