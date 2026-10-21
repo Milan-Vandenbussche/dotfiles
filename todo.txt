@@ -6,7 +6,7 @@
 3.	discover how to make applications pop up not in tiling mode but hover above, for 
 	settings, prism launcher, audio settings, steam. (like steam login page)
 
-4.	config grub, 1. for desktop with win/linux split, 1. for laptop idk yet
+4.	config grub style, 1. for desktop with win/linux split, 1. for laptop idk yet
 
 5.	replace current audio gui with better one or config this one.
 
@@ -20,7 +20,7 @@
 
 10.	color scheme for terminal text
 
-11.	be abke to select system themes that change all the config styles to match 
+11.	be able to select system themes that change all the config styles to match 
 	(need to make multiple seperate configs)
 
 12.	make file Manager remember last opened dir after close.
