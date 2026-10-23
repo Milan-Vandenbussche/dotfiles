@@ -62,11 +62,12 @@
   },
 
   "bluetooth": {
-    "format": "",
+    "format": "󰂯",
     "format-disabled": "󰂲",
     "format-connected": "󰂱",
     "format-no-controller": "",
-    "tooltip-format": "Devices connected: {num_connections}"
+    "tooltip-format": "Devices connected: {num_connections}",
+    "on-click": "blueman-manager"
   },
 
   "pulseaudio": {
