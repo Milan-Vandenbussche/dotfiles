@@ -24,3 +24,5 @@
 	(need to make multiple seperate configs)
 
 12.	make file Manager remember last opened dir after close.
+
+13. rewrite current widets in quickshell, like bluetooth, wifi, audio, power menu etc. (make little music player where you can adjust volume and change song)
