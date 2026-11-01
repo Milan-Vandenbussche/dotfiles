@@ -76,6 +76,7 @@ qt5-quickcontrols2
 qt5-wayland
 qt6-virtualkeyboard
 qt6-wayland
+quickshell
 reflector
 rsync
 sddm

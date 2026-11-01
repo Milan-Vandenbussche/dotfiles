@@ -11,12 +11,14 @@ PACKAGES=(
   copyq
   desktop
   dolphin
+  dunst
   fastfetch
   git
   htop
   hypr
   kitty
   local-bin
+  quickshell
   scripts
   shell
   uwsm
