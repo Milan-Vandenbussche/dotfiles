@@ -1,0 +1,143 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+STATE_DIR="${XDG_STATE_HOME:-"$HOME/.local/state"}/theme"
+GEN_DIR="$STATE_DIR/generated"
+STATE_FILE="$STATE_DIR/state.json"
+DEFAULT_WALLPAPER="$HOME/.local/share/wallpapers/wallhaven-6l5emq.png"
+
+mkdir -p "$STATE_DIR" "$GEN_DIR"
+
+usage() {
+    cat << EOF
+Usage: $(basename "$0") <image-path> [--mode dark|light] [--scheme <variant>]
+       $(basename "$0") --restore
+
+Options:
+  --mode dark|light     Theme polarity (default: dark)
+  --scheme <variant>    Matugen scheme variant: scheme-neutral, scheme-tonal-spot, scheme-fidelity, etc. (default: scheme-neutral)
+  --restore             Restore palette and wallpaper from saved state
+  -h, --help            Show this help message
+EOF
+}
+
+# Ensure fallback hypr-colors.conf exists immediately so Hyprland never errors on startup
+ensure_hypr_fallback() {
+    local hypr_conf="$GEN_DIR/hypr-colors.conf"
+    if [[ ! -f "$hypr_conf" ]]; then
+        cat << 'EOF' > "$hypr_conf"
+# Default Mocha Fallback
+$primary = rgb(cba6f7)
+$on_primary = rgb(11111b)
+$surface = rgb(1e1e2e)
+$on_surface = rgb(cdd6f4)
+$active_border_color = rgb(cba6f7)
+$inactive_border_color = rgb(313244)
+EOF
+    fi
+}
+
+ensure_hypr_fallback
+
+IMAGE=""
+MODE="dark"
+SCHEME="scheme-neutral"
+RESTORE=0
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --restore)
+            RESTORE=1
+            shift
+            ;;
+        --mode)
+            MODE="${2:?missing mode value}"
+            shift 2
+            ;;
+        --scheme)
+            SCHEME="${2:?missing scheme value}"
+            shift 2
+            ;;
+        -h|--help)
+            usage
+            exit 0
+            ;;
+        *)
+            if [[ -z "$IMAGE" && ! "$1" =~ ^-- ]]; then
+                IMAGE="$1"
+            else
+                echo "Unknown argument: $1" >&2
+                usage
+                exit 1
+            fi
+            shift
+            ;;
+    esac
+done
+
+if (( RESTORE )); then
+    if [[ -f "$STATE_FILE" ]]; then
+        IMAGE="$(grep -oP '"wallpaper":\s*"\K[^"]+' "$STATE_FILE" 2>/dev/null || true)"
+        MODE="$(grep -oP '"mode":\s*"\K[^"]+' "$STATE_FILE" 2>/dev/null || echo "dark")"
+        SCHEME="$(grep -oP '"scheme":\s*"\K[^"]+' "$STATE_FILE" 2>/dev/null || echo "scheme-neutral")"
+    fi
+    if [[ -z "$IMAGE" || ! -f "$IMAGE" ]]; then
+        IMAGE="$DEFAULT_WALLPAPER"
+    fi
+fi
+
+if [[ -z "$IMAGE" ]]; then
+    echo "Error: No image specified." >&2
+    usage
+    exit 1
+fi
+
+if [[ ! -f "$IMAGE" ]]; then
+    echo "Error: Image file does not exist: $IMAGE" >&2
+    exit 1
+fi
+
+# Canonicalize image path
+IMAGE="$(realpath "$IMAGE")"
+
+# Check matugen is installed
+if ! command -v matugen >/dev/null 2>&1; then
+    echo "Error: matugen is not installed. Run 'sudo pacman -S matugen' first." >&2
+    exit 1
+fi
+
+# Track checksum of current hypr-colors.conf to avoid unnecessary reloads
+OLD_HYPR_HASH=""
+[[ -f "$GEN_DIR/hypr-colors.conf" ]] && OLD_HYPR_HASH="$(sha256sum "$GEN_DIR/hypr-colors.conf" | cut -d' ' -f1)"
+
+echo "Generating palette from: $IMAGE (mode: $MODE, scheme: $SCHEME)..."
+
+# Run matugen
+matugen image "$IMAGE" -m "$MODE" -t "$SCHEME"
+
+# Save state atomically
+TMP_STATE="$STATE_DIR/state.json.tmp"
+cat << EOF > "$TMP_STATE"
+{
+  "wallpaper": "$IMAGE",
+  "mode": "$MODE",
+  "scheme": "$SCHEME"
+}
+EOF
+mv "$TMP_STATE" "$STATE_FILE"
+
+# Update wallpaper via awww if running
+if command -v awww >/dev/null 2>&1 && pgrep -x awww-daemon >/dev/null 2>&1; then
+    awww img "$IMAGE" || true
+fi
+
+# Reload Hyprland borders only if colors changed
+NEW_HYPR_HASH=""
+[[ -f "$GEN_DIR/hypr-colors.conf" ]] && NEW_HYPR_HASH="$(sha256sum "$GEN_DIR/hypr-colors.conf" | cut -d' ' -f1)"
+
+if [[ "$OLD_HYPR_HASH" != "$NEW_HYPR_HASH" ]] && command -v hyprctl >/dev/null 2>&1; then
+    echo "Reloading Hyprland border colors..."
+    hyprctl reload || true
+fi
+
+echo "Theme applied successfully."

@@ -49,6 +49,7 @@ linux-zen
 linux-zen-headers
 love
 mangohud
+matugen
 mkinitcpio
 nano
 nautilus

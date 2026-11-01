@@ -18,6 +18,7 @@ PACKAGES=(
   hypr
   kitty
   local-bin
+  matugen
   quickshell
   scripts
   shell

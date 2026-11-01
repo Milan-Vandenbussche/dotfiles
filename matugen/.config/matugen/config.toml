@@ -1,0 +1,10 @@
+# Matugen Configuration (v4.x)
+# Generated outputs live under $XDG_STATE_HOME/theme/generated/ (defaults to ~/.local/state)
+
+[templates.colors_json]
+input_path = "~/.config/matugen/templates/colors.json.tpl"
+output_path = "~/.local/state/theme/generated/colors.json"
+
+[templates.hypr_colors]
+input_path = "~/.config/matugen/templates/hypr-colors.conf.tpl"
+output_path = "~/.local/state/theme/generated/hypr-colors.conf"
