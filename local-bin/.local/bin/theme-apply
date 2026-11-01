@@ -15,7 +15,7 @@ Usage: $(basename "$0") <image-path> [--mode dark|light] [--scheme <variant>]
 
 Options:
   --mode dark|light     Theme polarity (default: dark)
-  --scheme <variant>    Matugen scheme variant: scheme-neutral, scheme-tonal-spot, scheme-fidelity, etc. (default: scheme-neutral)
+  --scheme <variant>    Matugen scheme variant: scheme-tonal-spot, scheme-fidelity, scheme-vibrant, scheme-neutral (default: scheme-tonal-spot)
   --restore             Restore palette and wallpaper from saved state
   -h, --help            Show this help message
 EOF
@@ -41,7 +41,7 @@ ensure_hypr_fallback
 
 IMAGE=""
 MODE="dark"
-SCHEME="scheme-neutral"
+SCHEME="scheme-tonal-spot"
 RESTORE=0
 
 while [[ $# -gt 0 ]]; do
@@ -79,7 +79,7 @@ if (( RESTORE )); then
     if [[ -f "$STATE_FILE" ]]; then
         IMAGE="$(grep -oP '"wallpaper":\s*"\K[^"]+' "$STATE_FILE" 2>/dev/null || true)"
         MODE="$(grep -oP '"mode":\s*"\K[^"]+' "$STATE_FILE" 2>/dev/null || echo "dark")"
-        SCHEME="$(grep -oP '"scheme":\s*"\K[^"]+' "$STATE_FILE" 2>/dev/null || echo "scheme-neutral")"
+        SCHEME="$(grep -oP '"scheme":\s*"\K[^"]+' "$STATE_FILE" 2>/dev/null || echo "scheme-tonal-spot")"
     fi
     if [[ -z "$IMAGE" || ! -f "$IMAGE" ]]; then
         IMAGE="$DEFAULT_WALLPAPER"
@@ -126,12 +126,12 @@ cat << EOF > "$TMP_STATE"
 EOF
 mv "$TMP_STATE" "$STATE_FILE"
 
-# Update wallpaper via awww if running
+# Update wallpaper via awww if running (with snappy 0.5s fade)
 if command -v awww >/dev/null 2>&1 && pgrep -x awww-daemon >/dev/null 2>&1; then
-    awww img "$IMAGE" || true
+    awww img "$IMAGE" --transition-type fade --transition-duration 0.5 --transition-fps 60 || true
 fi
 
-# Reload Hyprland borders only if colors changed
+# Reload Hyprland borders
 NEW_HYPR_HASH=""
 [[ -f "$GEN_DIR/hypr-colors.conf" ]] && NEW_HYPR_HASH="$(sha256sum "$GEN_DIR/hypr-colors.conf" | cut -d' ' -f1)"
 
@@ -139,5 +139,8 @@ if [[ "$OLD_HYPR_HASH" != "$NEW_HYPR_HASH" ]] && command -v hyprctl >/dev/null 2
     echo "Reloading Hyprland border colors..."
     hyprctl reload || true
 fi
+
+# Notify running Quickshell instances to reload colors immediately
+qs -c shell ipc call theme reload >/dev/null 2>&1 || qs ipc call theme reload >/dev/null 2>&1 || true
 
 echo "Theme applied successfully."

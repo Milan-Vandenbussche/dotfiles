@@ -13,6 +13,18 @@ Item {
         return base + "/theme/generated/colors.json";
     }
 
+    function reload() {
+        fileView.reload();
+    }
+
+    // IPC handler allowing theme-apply to notify Quickshell when palette changes
+    IpcHandler {
+        target: "theme"
+        function reload(): void {
+            root.reload();
+        }
+    }
+
     FileView {
         id: fileView
         path: root.colorsPath
@@ -60,6 +72,7 @@ Item {
     property color outline_variant: json.outline_variant || "#313244"
     property color error: json.error || "#f38ba8"
     property color on_error: json.on_error || "#11111b"
+    property color onErrorColor: on_error
 
     // Smooth animation across all token changes
     readonly property int animDuration: 250
