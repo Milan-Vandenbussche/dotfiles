@@ -113,15 +113,20 @@ install_aur_packages() {
 }
 
 select_host() {
-  local host_conf="$REPO_ROOT/hosts/$HOST_PROFILE/hypr/host.conf"
-  local package_host_conf="$REPO_ROOT/hypr/.config/hypr/host.conf"
+  local host_lua="$REPO_ROOT/hosts/$HOST_PROFILE/hypr/host.lua"
+  local package_host_lua="$REPO_ROOT/hypr/.config/hypr/host.lua"
 
-  if [[ ! -f "$host_conf" ]]; then
-    echo "Host profile not found: $host_conf" >&2
+  if [[ ! -f "$host_lua" ]]; then
+    echo "Host profile not found: $host_lua" >&2
     return 1
   fi
 
-  ln -sfn -- "../../../hosts/$HOST_PROFILE/hypr/host.conf" "$package_host_conf"
+  ln -sfn -- "../../../hosts/$HOST_PROFILE/hypr/host.lua" "$package_host_lua"
+
+  # Keep legacy host.conf symlink if host.conf exists
+  if [[ -f "$REPO_ROOT/hosts/$HOST_PROFILE/hypr/host.conf" ]]; then
+    ln -sfn -- "../../../hosts/$HOST_PROFILE/hypr/host.conf" "$REPO_ROOT/hypr/.config/hypr/host.conf"
+  fi
 }
 
 install_steam_desktop() {

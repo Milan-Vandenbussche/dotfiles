@@ -58,16 +58,16 @@ bin/bootstrap.sh --configs-only
 
 ## Host-Specific Hyprland Config
 
-The shared Hyprland config sources:
+The shared Hyprland config requires:
 
 ```text
-~/.config/hypr/host.conf
+~/.config/hypr/host.lua
 ```
 
 The current desktop profile lives at:
 
 ```text
-hosts/current-desktop/hypr/host.conf
+hosts/current-desktop/hypr/host.lua
 ```
 
 That file contains hardware-specific settings such as monitor names, refresh rates, positions, and the current mouse device rule. For another machine, add a new folder under `hosts/` and run:
