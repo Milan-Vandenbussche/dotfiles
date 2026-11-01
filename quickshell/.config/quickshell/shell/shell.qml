@@ -1,5 +1,8 @@
 import QtQuick
 import Quickshell
+import "Theme"
+import "Services"
+import "Components"
 
 ShellRoot {
     Variants {
@@ -17,30 +20,32 @@ ShellRoot {
                 right: true
             }
 
-            // Height for initial parallel testing
-            // (Waybar is 26px; we can use 28px or temporarily bottom/top)
-            height: 28
-
-            color: "#111111"
+            implicitHeight: 28
+            color: "transparent"
 
             Rectangle {
                 anchors.fill: parent
-                color: "#181825"
-
-                border {
-                    color: "#313244"
-                    width: 1
-                }
+                color: Colors.surface
+                border.color: Colors.outline
+                border.width: 1
 
                 Row {
                     anchors.centerIn: parent
-                    spacing: 8
+                    spacing: Appearance.spacingMedium
+
+                    Icon {
+                        anchors.verticalCenter: parent.verticalCenter
+                        name: "󰥔"
+                        size: Appearance.iconSmall
+                        color: Colors.primary
+                    }
 
                     Text {
                         id: clockText
-                        color: "#cdd6f4"
-                        font.family: "JetBrainsMono Nerd Font"
-                        font.pixelSize: 12
+                        anchors.verticalCenter: parent.verticalCenter
+                        color: Colors.on_surface
+                        font.family: Appearance.fontFamily
+                        font.pixelSize: Appearance.fontNormal
                         text: Qt.formatDateTime(new Date(), "ddd dd MMM  hh:mm:ss")
 
                         Timer {
@@ -54,10 +59,46 @@ ShellRoot {
                     }
 
                     Text {
-                        color: "#89b4fa"
-                        font.family: "JetBrainsMono Nerd Font"
-                        font.pixelSize: 12
-                        text: "• " + (barWindow.screen ? barWindow.screen.name : "")
+                        anchors.verticalCenter: parent.verticalCenter
+                        color: Colors.outline
+                        text: "|"
+                        font.family: Appearance.fontFamily
+                    }
+
+                    // Display screen name
+                    Text {
+                        anchors.verticalCenter: parent.verticalCenter
+                        color: Colors.on_surface_variant
+                        font.family: Appearance.fontFamily
+                        font.pixelSize: Appearance.fontSmall
+                        text: barWindow.screen ? barWindow.screen.name : ""
+                    }
+
+                    // Hardware indicator previews
+                    Row {
+                        anchors.verticalCenter: parent.verticalCenter
+                        spacing: Appearance.spacingSmall
+
+                        Icon {
+                            visible: Hardware.hasBattery
+                            name: "󰁹"
+                            size: Appearance.iconSmall
+                            color: Colors.primary
+                        }
+
+                        Icon {
+                            visible: Hardware.hasBluetooth
+                            name: "󰂯"
+                            size: Appearance.iconSmall
+                            color: Colors.on_surface_variant
+                        }
+
+                        Icon {
+                            visible: Hardware.hasWifi
+                            name: "󰤨"
+                            size: Appearance.iconSmall
+                            color: Colors.on_surface_variant
+                        }
                     }
                 }
             }
