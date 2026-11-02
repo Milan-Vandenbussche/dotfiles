@@ -9,8 +9,8 @@ Rectangle {
     implicitWidth: 230
     implicitHeight: 220
     radius: Appearance.radiusMedium
-    color: Colors.surfaceContainer
-    border.color: Colors.outline
+    color: Qt.rgba(Colors.surface_container.r, Colors.surface_container.g, Colors.surface_container.b, 0.95)
+    border.color: Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, 0.35)
     border.width: 1
 
     Column {
@@ -48,7 +48,7 @@ Rectangle {
                     required property string modelData
                     width: 22
                     text: modelData
-                    color: Colors.on_surface_variant
+                    color: Colors.primary
                     font.family: Appearance.fontFamily
                     font.pixelSize: Appearance.fontSmall
                     horizontalAlignment: Text.AlignHCenter

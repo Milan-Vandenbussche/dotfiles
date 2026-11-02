@@ -42,19 +42,29 @@ Rectangle {
             color: root.isPlaying ? Colors.primary : Colors.on_surface_variant
         }
 
-        Text {
+        Row {
             anchors.verticalCenter: parent.verticalCenter
-            text: {
-                if (!root.activePlayer) return "";
-                const title = root.activePlayer.trackTitle || "Unknown Title";
-                const artist = root.activePlayer.trackArtist || "";
-                const full = artist !== "" ? (title + " • " + artist) : title;
-                return full.length > 32 ? full.substring(0, 30) + "…" : full;
+            spacing: 4
+
+            Text {
+                text: root.activePlayer ? (root.activePlayer.trackTitle || "Unknown Title") : ""
+                color: Colors.on_surface
+                font.family: Appearance.fontFamily
+                font.pixelSize: Appearance.fontSmall
+                font.weight: Font.Medium
+                elide: Text.ElideRight
+                maximumLineCount: 1
             }
-            color: Colors.on_surface
-            font.family: Appearance.fontFamily
-            font.pixelSize: Appearance.fontSmall
-            elide: Text.ElideRight
+
+            Text {
+                visible: root.activePlayer && root.activePlayer.trackArtist !== ""
+                text: root.activePlayer && root.activePlayer.trackArtist !== "" ? ("• " + root.activePlayer.trackArtist) : ""
+                color: Colors.primary
+                font.family: Appearance.fontFamily
+                font.pixelSize: Appearance.fontSmall
+                elide: Text.ElideRight
+                maximumLineCount: 1
+            }
         }
 
         // Mini 4-bar equalizer that pulses when playing and freezes when paused

@@ -22,7 +22,7 @@ Item {
         Text {
             id: clockText
             anchors.centerIn: parent
-            color: Colors.on_surface
+            color: Colors.primary
             font.family: Appearance.fontFamily
             font.pixelSize: Appearance.fontNormal
             font.bold: true

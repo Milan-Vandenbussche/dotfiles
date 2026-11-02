@@ -26,7 +26,7 @@ Item {
             anchors.centerIn: parent
             name: "⏻"
             size: Appearance.iconSmall
-            color: mouseArea.containsMouse || root.menuOpen ? Colors.error : Colors.on_surface_variant
+            color: mouseArea.containsMouse || root.menuOpen ? Colors.error : Colors.primary
 
             Behavior on color { ColorAnimation { duration: Appearance.animDurationFast } }
         }
@@ -57,8 +57,8 @@ Item {
             id: menuCard
             anchors.fill: parent
             radius: Appearance.radiusMedium
-            color: Colors.surfaceContainer
-            border.color: Colors.outline
+            color: Qt.rgba(Colors.surface_container.r, Colors.surface_container.g, Colors.surface_container.b, 0.95)
+            border.color: Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, 0.35)
             border.width: 1
 
             implicitHeight: menuColumn.implicitHeight + Appearance.spacingSmall * 2
@@ -99,20 +99,13 @@ Item {
                     }
                 }
 
-                Rectangle {
-                    width: parent.width - 8
-                    height: 1
-                    color: Colors.outline
-                    anchors.horizontalCenter: parent.horizontalCenter
-                }
-
                 ListRow {
                     width: parent.width
                     icon: "⏻"
                     title: "Shut Down"
                     onClicked: {
                         root.menuOpen = false;
-                        Power.poweroff();
+                        Power.shutdown();
                     }
                 }
             }

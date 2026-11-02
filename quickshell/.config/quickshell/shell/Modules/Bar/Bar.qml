@@ -13,13 +13,13 @@ Rectangle {
 
     Behavior on color { ColorAnimation { duration: Appearance.animDurationNormal } }
 
-    // Subtle 1px bottom boundary line
+    // Subtle 1px bottom boundary line with theme accent
     Rectangle {
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom
         height: 1
-        color: Qt.rgba(Colors.outline.r, Colors.outline.g, Colors.outline.b, 0.25)
+        color: Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, 0.35)
     }
 
     // ── LEFT SECTION (Workspaces + Media Ticker) ─────────────────────────

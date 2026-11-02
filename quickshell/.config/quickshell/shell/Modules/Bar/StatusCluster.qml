@@ -1,6 +1,5 @@
 import QtQuick
 import Quickshell
-import Quickshell.Services.SystemTray
 import "../../Theme"
 import "../../Services"
 import "../../Components"
@@ -17,52 +16,11 @@ Row {
         id: wpBtn
         icon: "󰸉"
         iconSize: Appearance.iconMedium
-        iconColor: hovered ? Colors.primary : Colors.on_surface_variant
+        iconColor: hovered ? Colors.on_surface : Colors.primary
         onClicked: root.wallpaperPickerRequested()
     }
 
-    // ── 2. System Tray ───────────────────────────────────────────────────
-    Row {
-        id: trayRow
-        anchors.verticalCenter: parent.verticalCenter
-        spacing: Appearance.spacingSmall
-        visible: SystemTray.items && SystemTray.items.values && SystemTray.items.values.length > 0
-
-        Repeater {
-            model: SystemTray.items ? SystemTray.items.values : []
-
-            delegate: Item {
-                id: trayDelegate
-                required property var modelData
-                width: 20
-                height: 20
-                anchors.verticalCenter: parent.verticalCenter
-
-                Image {
-                    anchors.centerIn: parent
-                    width: 16
-                    height: 16
-                    source: trayDelegate.modelData ? (trayDelegate.modelData.icon || "") : ""
-                }
-
-                MouseArea {
-                    anchors.fill: parent
-                    cursorShape: Qt.PointingHandCursor
-                    acceptedButtons: Qt.LeftButton | Qt.RightButton
-                    onClicked: (mouse) => {
-                        if (!trayDelegate.modelData) return;
-                        if (mouse.button === Qt.LeftButton) {
-                            trayDelegate.modelData.activate(mouse.x, mouse.y);
-                        } else if (mouse.button === Qt.RightButton && trayDelegate.modelData.menu) {
-                            trayDelegate.modelData.menu.open(mouse.x, mouse.y);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    // ── 3. Network (Wi-Fi / Ethernet) ───────────────────────────────────
+    // ── 2. Network (Wi-Fi / Ethernet) ───────────────────────────────────
     Rectangle {
         id: netItem
         implicitWidth: 26
@@ -86,7 +44,7 @@ Row {
             anchors.centerIn: parent
             name: netItem.netIcon
             size: Appearance.iconMedium
-            color: Network.isConnected ? Colors.on_surface : Colors.on_surface_variant
+            color: Network.isConnected ? Colors.primary : Colors.on_surface_variant
         }
 
         MouseArea {
@@ -106,7 +64,7 @@ Row {
         }
     }
 
-    // ── 4. Bluetooth (Laptop only) ──────────────────────────────────────
+    // ── 3. Bluetooth (Laptop only) ──────────────────────────────────────
     Rectangle {
         id: btItem
         visible: Hardware.hasBluetooth
@@ -127,7 +85,7 @@ Row {
             anchors.centerIn: parent
             name: btItem.btIcon
             size: Appearance.iconMedium
-            color: Bluetooth.isConnected ? Colors.primary : (Bluetooth.isEnabled ? Colors.on_surface : Colors.on_surface_variant)
+            color: Bluetooth.isEnabled ? Colors.primary : Colors.on_surface_variant
         }
 
         MouseArea {
@@ -147,7 +105,7 @@ Row {
         }
     }
 
-    // ── 5. Volume (with Scroll & Right-click Mute) ───────────────────────
+    // ── 4. Volume (with Scroll & Right-click Mute) ───────────────────────
     Rectangle {
         id: volItem
         implicitWidth: 26
@@ -169,7 +127,7 @@ Row {
             anchors.centerIn: parent
             name: volItem.volIcon
             size: Appearance.iconMedium
-            color: Audio.muted ? Colors.on_surface_variant : Colors.on_surface
+            color: Audio.muted ? Colors.error : Colors.primary
         }
 
         MouseArea {
@@ -193,7 +151,7 @@ Row {
         }
     }
 
-    // ── 6. Battery (with Brightness Scroll) ──────────────────────────────
+    // ── 5. Battery (with Brightness Scroll) ──────────────────────────────
     Rectangle {
         id: batItem
         visible: Hardware.hasBattery && Power.hasBattery
@@ -237,7 +195,7 @@ Row {
             anchors.centerIn: parent
             name: batItem.batIcon
             size: Appearance.iconMedium
-            color: batItem.pct <= 20 && !batItem.charging ? Colors.error : (batItem.charging ? Colors.primary : Colors.on_surface)
+            color: batItem.pct <= 20 && !batItem.charging ? Colors.error : Colors.primary
         }
 
         MouseArea {
