@@ -12,19 +12,37 @@ Row {
     signal wallpaperPickerRequested()
 
     // ── 1. Wallpaper Picker Button ───────────────────────────────────────
-    IconButton {
-        id: wpBtn
-        icon: "󰸉"
-        iconSize: Appearance.iconMedium
-        iconColor: hovered ? Colors.on_surface : Colors.primary
-        onClicked: root.wallpaperPickerRequested()
+    Rectangle {
+        id: wpItem
+        implicitWidth: 26
+        implicitHeight: 26
+        radius: Appearance.radiusSmall
+        color: wpHover.containsMouse ? Colors.surface_container_high : "transparent"
+
+        Behavior on color { ColorAnimation { duration: Appearance.animDurationFast } }
+
+        Icon {
+            anchors.centerIn: parent
+            anchors.horizontalCenterOffset: -2
+            name: "󰸉"
+            size: Appearance.iconMedium
+            color: wpHover.containsMouse ? Colors.on_surface : Colors.primary
+        }
+
+        MouseArea {
+            id: wpHover
+            anchors.fill: parent
+            hoverEnabled: true
+            cursorShape: Qt.PointingHandCursor
+            onClicked: root.wallpaperPickerRequested()
+        }
     }
 
     // ── 2. Network (Wi-Fi / Ethernet) ───────────────────────────────────
     Rectangle {
         id: netItem
         implicitWidth: 26
-        implicitHeight: 24
+        implicitHeight: 26
         radius: Appearance.radiusSmall
         color: netHover.containsMouse ? Colors.surface_container_high : "transparent"
 
@@ -42,6 +60,7 @@ Row {
 
         Icon {
             anchors.centerIn: parent
+            anchors.horizontalCenterOffset: Network.isEthernet ? 0 : -3
             name: netItem.netIcon
             size: Appearance.iconMedium
             color: Network.isConnected ? Colors.primary : Colors.on_surface_variant
@@ -69,7 +88,7 @@ Row {
         id: btItem
         visible: Hardware.hasBluetooth
         implicitWidth: 26
-        implicitHeight: 24
+        implicitHeight: 26
         radius: Appearance.radiusSmall
         color: btHover.containsMouse ? Colors.surface_container_high : "transparent"
 
@@ -109,7 +128,7 @@ Row {
     Rectangle {
         id: volItem
         implicitWidth: 26
-        implicitHeight: 24
+        implicitHeight: 26
         radius: Appearance.radiusSmall
         color: volHover.containsMouse ? Colors.surface_container_high : "transparent"
 
@@ -156,7 +175,7 @@ Row {
         id: batItem
         visible: Hardware.hasBattery && Power.hasBattery
         implicitWidth: 26
-        implicitHeight: 24
+        implicitHeight: 26
         radius: Appearance.radiusSmall
         color: batHover.containsMouse ? Colors.surface_container_high : "transparent"
 
