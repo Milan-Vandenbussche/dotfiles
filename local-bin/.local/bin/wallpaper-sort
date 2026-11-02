@@ -116,7 +116,9 @@ def sort_key(path):
     b = info.get("brightness", 0)
     if hue < 0:
         return (1, b, path)
-    return (0, hue, path)
+    # Shift hue so all reds (330° to 360° and 0° to 30°) cluster together continuously
+    shifted_hue = (hue - 330) % 360
+    return (0, shifted_hue, path)
 
 files.sort(key=sort_key)
 

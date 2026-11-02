@@ -86,10 +86,11 @@ Item {
     }
 
     function toggleMute() {
+        const next = !root.muted;
         if (root.defaultSink && root.defaultSink.audio) {
-            root.defaultSink.audio.muted = !root.defaultSink.audio.muted;
+            root.defaultSink.audio.muted = next;
         }
-        Quickshell.execDetached(["wpctl", "set-mute", "@DEFAULT_AUDIO_SINK@", "toggle"]);
+        Quickshell.execDetached(["wpctl", "set-mute", "@DEFAULT_AUDIO_SINK@", next ? "1" : "0"]);
     }
 
     function setMicVolume(val) {
@@ -101,10 +102,11 @@ Item {
     }
 
     function toggleMicMute() {
+        const next = !root.micMuted;
         if (root.defaultSource && root.defaultSource.audio) {
-            root.defaultSource.audio.muted = !root.defaultSource.audio.muted;
+            root.defaultSource.audio.muted = next;
         }
-        Quickshell.execDetached(["wpctl", "set-mute", "@DEFAULT_AUDIO_SOURCE@", "toggle"]);
+        Quickshell.execDetached(["wpctl", "set-mute", "@DEFAULT_AUDIO_SOURCE@", next ? "1" : "0"]);
     }
 
     function setDefaultSink(nodeId) {
@@ -128,9 +130,10 @@ Item {
 
     function toggleNodeMute(node) {
         if (!node || !node.audio) return;
-        node.audio.muted = !node.audio.muted;
+        const next = !node.audio.muted;
+        node.audio.muted = next;
         if (node.id) {
-            Quickshell.execDetached(["wpctl", "set-mute", node.id.toString(), "toggle"]);
+            Quickshell.execDetached(["wpctl", "set-mute", node.id.toString(), next ? "1" : "0"]);
         }
     }
 }

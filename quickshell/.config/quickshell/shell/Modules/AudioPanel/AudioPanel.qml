@@ -28,6 +28,19 @@ PopupWindow {
         onActivated: Audio.panelOpen = false
     }
 
+    Timer {
+        id: leaveTimer
+        interval: 450
+        repeat: false
+        onTriggered: Audio.panelOpen = false
+    }
+
+    onVisibleChanged: {
+        if (visible) {
+            leaveTimer.stop();
+        }
+    }
+
     Rectangle {
         id: card
         anchors.fill: parent
@@ -37,6 +50,17 @@ PopupWindow {
         border.width: 1
 
         implicitHeight: contentCol.implicitHeight + Appearance.spacingMedium * 2
+
+        HoverHandler {
+            id: cardHover
+            onHoveredChanged: {
+                if (hovered) {
+                    leaveTimer.stop();
+                } else if (Audio.panelOpen) {
+                    leaveTimer.restart();
+                }
+            }
+        }
 
         Column {
             id: contentCol
