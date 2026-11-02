@@ -7,63 +7,130 @@ import Quickshell.Io
 Item {
     id: root
 
-    // Reactive Pipewire integration with wpctl fallback
-    property real volume: 0.5
-    property bool muted: false
-
+    // Track all Pipewire nodes so their audio interfaces are live
     PwObjectTracker {
-        objects: Pipewire.defaultAudioSink ? [Pipewire.defaultAudioSink] : []
+        objects: Pipewire.nodes ? Pipewire.nodes.values : []
     }
 
-    Connections {
-        target: Pipewire.defaultAudioSink ? Pipewire.defaultAudioSink.audio : null
-        function onVolumeChanged() {
-            if (Pipewire.defaultAudioSink && Pipewire.defaultAudioSink.audio) {
-                root.volume = Pipewire.defaultAudioSink.audio.volume;
-            }
+    readonly property var defaultSink: Pipewire.defaultAudioSink
+    readonly property var defaultSource: Pipewire.defaultAudioSource
+
+    readonly property real volume: defaultSink && defaultSink.audio ? defaultSink.audio.volume : 1.0
+    readonly property bool muted: defaultSink && defaultSink.audio ? defaultSink.audio.muted : false
+
+    readonly property real micVolume: defaultSource && defaultSource.audio ? defaultSource.audio.volume : 1.0
+    readonly property bool micMuted: defaultSource && defaultSource.audio ? defaultSource.audio.muted : false
+
+    // Output sinks (speakers, headphones, HDMI)
+    readonly property var sinks: {
+        if (!Pipewire.nodes || !Pipewire.nodes.values) return [];
+        return Pipewire.nodes.values.filter(n => n && n.isSink && !n.isStream && n.audio);
+    }
+
+    // Input sources (microphones)
+    readonly property var sources: {
+        if (!Pipewire.nodes || !Pipewire.nodes.values) return [];
+        return Pipewire.nodes.values.filter(n => n && !n.isSink && !n.isStream && n.audio);
+    }
+
+    // Per-application playback streams
+    readonly property var streams: {
+        if (!Pipewire.nodes || !Pipewire.nodes.values) return [];
+        return Pipewire.nodes.values.filter(n => n && n.isStream && n.audio);
+    }
+
+    property bool panelOpen: false
+
+    // IPC handler allowing keybinds or scripts to control audio
+    IpcHandler {
+        target: "audio"
+        function toggle(): void {
+            root.togglePanel();
         }
-        function onMutedChanged() {
-            if (Pipewire.defaultAudioSink && Pipewire.defaultAudioSink.audio) {
-                root.muted = Pipewire.defaultAudioSink.audio.muted;
-            }
+        function open(): void {
+            root.panelOpen = true;
+        }
+        function close(): void {
+            root.panelOpen = false;
+        }
+        function up(): void {
+            root.stepVolume(0.05);
+        }
+        function down(): void {
+            root.stepVolume(-0.05);
+        }
+        function mute(): void {
+            root.toggleMute();
         }
     }
 
-    // Process to read initial volume via wpctl
-    Process {
-        id: wpctlReader
-        command: ["wpctl", "get-volume", "@DEFAULT_AUDIO_SINK@"]
-        running: true
-        stdout: StdioCollector {
-            onTextChanged: {
-                const text = this.text.trim();
-                // Output format: "Volume: 0.65" or "Volume: 0.65 [MUTED]"
-                const match = text.match(/Volume:\s+([0-9.]+)(\s+\[MUTED\])?/);
-                if (match) {
-                    root.volume = parseFloat(match[1]);
-                    root.muted = !!match[2];
-                }
-            }
+    function togglePanel() {
+        root.panelOpen = !root.panelOpen;
+    }
+
+    function setVolume(val) {
+        const clamped = Math.max(0.0, Math.min(1.0, val));
+        if (root.defaultSink && root.defaultSink.audio) {
+            root.defaultSink.audio.volume = clamped;
         }
+        Quickshell.execDetached(["wpctl", "set-volume", "@DEFAULT_AUDIO_SINK@", clamped.toFixed(2)]);
     }
 
     function stepVolume(delta) {
-        if (delta > 0) {
-            Quickshell.execDetached(["wpctl", "set-volume", "-l", "1.0", "@DEFAULT_AUDIO_SINK@", "5%+"]);
-            root.volume = Math.min(1.0, root.volume + 0.05);
-        } else {
-            Quickshell.execDetached(["wpctl", "set-volume", "@DEFAULT_AUDIO_SINK@", "5%-"]);
-            root.volume = Math.max(0.0, root.volume - 0.05);
+        const current = root.volume;
+        const target = Math.max(0.0, Math.min(1.0, current + delta));
+        root.setVolume(target);
+        if (root.muted && delta > 0) {
+            root.toggleMute();
         }
-        root.muted = false;
     }
 
     function toggleMute() {
+        if (root.defaultSink && root.defaultSink.audio) {
+            root.defaultSink.audio.muted = !root.defaultSink.audio.muted;
+        }
         Quickshell.execDetached(["wpctl", "set-mute", "@DEFAULT_AUDIO_SINK@", "toggle"]);
-        root.muted = !root.muted;
     }
 
-    function openMixer() {
-        Quickshell.execDetached(["kitty", "wiremix"]);
+    function setMicVolume(val) {
+        const clamped = Math.max(0.0, Math.min(1.0, val));
+        if (root.defaultSource && root.defaultSource.audio) {
+            root.defaultSource.audio.volume = clamped;
+        }
+        Quickshell.execDetached(["wpctl", "set-volume", "@DEFAULT_AUDIO_SOURCE@", clamped.toFixed(2)]);
+    }
+
+    function toggleMicMute() {
+        if (root.defaultSource && root.defaultSource.audio) {
+            root.defaultSource.audio.muted = !root.defaultSource.audio.muted;
+        }
+        Quickshell.execDetached(["wpctl", "set-mute", "@DEFAULT_AUDIO_SOURCE@", "toggle"]);
+    }
+
+    function setDefaultSink(nodeId) {
+        if (!nodeId) return;
+        Quickshell.execDetached(["wpctl", "set-default", nodeId.toString()]);
+    }
+
+    function setDefaultSource(nodeId) {
+        if (!nodeId) return;
+        Quickshell.execDetached(["wpctl", "set-default", nodeId.toString()]);
+    }
+
+    function setNodeVolume(node, val) {
+        if (!node || !node.audio) return;
+        const clamped = Math.max(0.0, Math.min(1.0, val));
+        node.audio.volume = clamped;
+        if (node.id) {
+            Quickshell.execDetached(["wpctl", "set-volume", node.id.toString(), clamped.toFixed(2)]);
+        }
+    }
+
+    function toggleNodeMute(node) {
+        if (!node || !node.audio) return;
+        node.audio.muted = !node.audio.muted;
+        if (node.id) {
+            Quickshell.execDetached(["wpctl", "set-mute", node.id.toString(), "toggle"]);
+        }
     }
 }

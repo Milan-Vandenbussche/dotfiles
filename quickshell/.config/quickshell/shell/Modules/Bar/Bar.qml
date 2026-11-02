@@ -52,6 +52,7 @@ Rectangle {
         spacing: Appearance.spacingLarge
 
         StatusCluster {
+            parentWindow: root.barWindow
             onWallpaperPickerRequested: Wallpaper.togglePicker()
         }
 

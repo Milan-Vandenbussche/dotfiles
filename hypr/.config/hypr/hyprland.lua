@@ -192,6 +192,7 @@ local mainMod = "SUPER"
 
 -- Own binds
 hl.bind(mainMod .. " + W", hl.dsp.exec_cmd("qs -c shell ipc call wallpaper toggle"))
+hl.bind(mainMod .. " + A", hl.dsp.exec_cmd("qs -c shell ipc call audio toggle"))
 hl.bind(mainMod .. " + SPACE", hl.dsp.exec_cmd("wofi --show drun --conf ~/.config/wofi/config --style ~/.config/wofi/style.css"))
 hl.bind(mainMod .. " + S", hl.dsp.exec_cmd("screenshot"))
 hl.bind(mainMod .. " + F", hl.dsp.exec_cmd("systemctl poweroff"))

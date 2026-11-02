@@ -3,12 +3,14 @@ import Quickshell
 import "../../Theme"
 import "../../Services"
 import "../../Components"
+import "../AudioPanel"
 
 Row {
     id: root
     spacing: Appearance.spacingMedium
     anchors.verticalCenter: parent.verticalCenter
 
+    property var parentWindow: null
     signal wallpaperPickerRequested()
 
     // ── 1. Wallpaper Picker Button ───────────────────────────────────────
@@ -164,10 +166,16 @@ Row {
                 if (mouse.button === Qt.RightButton) {
                     Audio.toggleMute();
                 } else {
-                    Audio.openMixer();
+                    Audio.togglePanel();
                 }
             }
         }
+    }
+
+    // Anchored Audio Panel
+    AudioPanel {
+        parentWindow: root.parentWindow
+        anchorItem: volItem
     }
 
     // ── 5. Battery (with Brightness Scroll) ──────────────────────────────
