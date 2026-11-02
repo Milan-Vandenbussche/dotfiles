@@ -135,9 +135,15 @@ fi
 NEW_HYPR_HASH=""
 [[ -f "$GEN_DIR/hypr-colors.conf" ]] && NEW_HYPR_HASH="$(sha256sum "$GEN_DIR/hypr-colors.conf" | cut -d' ' -f1)"
 
-if [[ "$OLD_HYPR_HASH" != "$NEW_HYPR_HASH" ]] && command -v hyprctl >/dev/null 2>&1; then
-    echo "Reloading Hyprland border colors..."
-    hyprctl reload || true
+if command -v hyprctl >/dev/null 2>&1; then
+    PRIMARY_HEX="$(grep -oP '"primary":\s*"#\K[0-9a-fA-F]+' "$GEN_DIR/colors.json" 2>/dev/null || echo "cba6f7")"
+    OUTLINE_HEX="$(grep -oP '"outline_variant":\s*"#\K[0-9a-fA-F]+' "$GEN_DIR/colors.json" 2>/dev/null || echo "313244")"
+    hyprctl keyword general:col.active_border "rgb($PRIMARY_HEX)" >/dev/null 2>&1 || true
+    hyprctl keyword general:col.inactive_border "rgb($OUTLINE_HEX)" >/dev/null 2>&1 || true
+    if [[ "$OLD_HYPR_HASH" != "$NEW_HYPR_HASH" ]]; then
+        echo "Reloading Hyprland configuration..."
+        hyprctl reload || true
+    fi
 fi
 
 # Notify running Quickshell instances to reload colors immediately

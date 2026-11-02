@@ -1,6 +1,7 @@
 import QtQuick
 import Quickshell
 import "../../Theme"
+import "../../Services"
 
 Rectangle {
     id: root
@@ -50,7 +51,9 @@ Rectangle {
         anchors.verticalCenter: parent.verticalCenter
         spacing: Appearance.spacingLarge
 
-        StatusCluster {}
+        StatusCluster {
+            onWallpaperPickerRequested: Wallpaper.togglePicker()
+        }
 
         ClockWidget {
             parentWindow: root.barWindow

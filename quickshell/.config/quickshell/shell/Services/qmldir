@@ -3,3 +3,4 @@ singleton Audio 1.0 Audio.qml
 singleton Power 1.0 Power.qml
 singleton Network 1.0 Network.qml
 singleton Bluetooth 1.0 Bluetooth.qml
+singleton Wallpaper 1.0 Wallpaper.qml

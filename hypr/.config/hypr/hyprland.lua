@@ -16,7 +16,7 @@ local menu        = "wofi"
 hl.on("hyprland.start", function()
     hl.exec_cmd("/usr/lib/polkit-kde-authentication-agent-1")
     hl.exec_cmd("awww-daemon")
-    hl.exec_cmd("awww img ~/.local/share/wallpapers/wallhaven-6l5emq.png")
+    hl.exec_cmd("theme-apply --restore")
     hl.exec_cmd("waybar")
     hl.exec_cmd("hyprpm reload -n && hyprctl reload")
 end)
@@ -51,6 +51,23 @@ hl.permission({ binary = "/usr/(lib|libexec|lib64)/xdg-desktop-portal-hyprland",
 ---- LOOK AND FEEL ----
 -----------------------
 
+local function get_theme_colors()
+    local state_dir = os.getenv("XDG_STATE_HOME") or (os.getenv("HOME") .. "/.local/state")
+    local f = io.open(state_dir .. "/theme/generated/colors.json", "r")
+    if f then
+        local content = f:read("*a")
+        f:close()
+        local p = content:match('"primary":%s*"#(%x+)"')
+        local ov = content:match('"outline_variant":%s*"#(%x+)"')
+        if p and ov then
+            return "rgb(" .. p .. ")", "rgb(" .. ov .. ")"
+        end
+    end
+    return "rgba(cba6f7ff)", "rgba(313244aa)"
+end
+
+local active_col, inactive_col = get_theme_colors()
+
 hl.config({
     general = {
         gaps_in  = 5,
@@ -59,8 +76,8 @@ hl.config({
         border_size = 2,
 
         col = {
-            active_border   = "rgba(585b70ff)",
-            inactive_border = "rgba(313244aa)",
+            active_border   = active_col,
+            inactive_border = inactive_col,
         },
 
         resize_on_border = false,
@@ -83,10 +100,15 @@ hl.config({
         },
 
         blur = {
-            enabled  = true,
-            size     = 3,
-            passes   = 1,
-            vibrancy = 0.1696,
+            enabled            = true,
+            size               = 6,
+            passes             = 3,
+            noise              = 0.04,
+            contrast           = 1.05,
+            brightness         = 0.95,
+            vibrancy           = 0.25,
+            popups             = true,
+            popups_ignorealpha = 0.15,
         },
     },
 
@@ -169,6 +191,7 @@ hl.gesture({
 local mainMod = "SUPER"
 
 -- Own binds
+hl.bind(mainMod .. " + W", hl.dsp.exec_cmd("qs -c shell ipc call wallpaper toggle"))
 hl.bind(mainMod .. " + SPACE", hl.dsp.exec_cmd("wofi --show drun --conf ~/.config/wofi/config --style ~/.config/wofi/style.css"))
 hl.bind(mainMod .. " + S", hl.dsp.exec_cmd("screenshot"))
 hl.bind(mainMod .. " + F", hl.dsp.exec_cmd("systemctl poweroff"))
@@ -315,3 +338,11 @@ register_nbtrackr_rule("nbtrackr-tag",   { tag = "nboverlay" })
 --     order        = 10,
 --     ignore_alpha = 0.9,
 -- })
+
+-- ── Quickshell layer blur ──────────────────────────────────────────────
+hl.layer_rule({
+    name         = "qs-blur",
+    match        = { namespace = "^(qs-.*)$" },
+    blur         = true,
+    ignore_alpha = 0.15,
+})
