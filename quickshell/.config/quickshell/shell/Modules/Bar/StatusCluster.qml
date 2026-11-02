@@ -4,6 +4,7 @@ import "../../Theme"
 import "../../Services"
 import "../../Components"
 import "../AudioPanel"
+import "../NetworkPanel"
 
 Row {
     id: root
@@ -79,10 +80,16 @@ Row {
                 if (mouse.button === Qt.RightButton) {
                     Network.toggleWifi();
                 } else {
-                    Network.openNetworkEditor();
+                    Network.togglePanel();
                 }
             }
         }
+    }
+
+    // Anchored Network Panel
+    NetworkPanel {
+        parentWindow: root.parentWindow
+        anchorItem: netItem
     }
 
     // ── 3. Bluetooth (Laptop only) ──────────────────────────────────────
