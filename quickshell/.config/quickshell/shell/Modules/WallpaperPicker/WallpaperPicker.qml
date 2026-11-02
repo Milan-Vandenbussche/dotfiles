@@ -30,12 +30,6 @@ PanelWindow {
 
     color: "transparent"
 
-    // Escape shortcut that reliably fires on the very first press
-    Shortcut {
-        enabled: Wallpaper.pickerOpen
-        sequence: "Escape"
-        onActivated: Wallpaper.pickerOpen = false
-    }
 
     // Dim backdrop (clicking outside closes the picker)
     Rectangle {

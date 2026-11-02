@@ -117,9 +117,17 @@ Rectangle {
         onClicked: (mouse) => {
             if (!root.activePlayer) return;
             if (mouse.button === Qt.LeftButton) {
-                root.activePlayer.playPause();
+                if (root.activePlayer.canTogglePlaying) {
+                    root.activePlayer.togglePlaying();
+                } else if (root.activePlayer.isPlaying) {
+                    root.activePlayer.pause();
+                } else {
+                    root.activePlayer.play();
+                }
             } else if (mouse.button === Qt.RightButton) {
-                root.activePlayer.next();
+                if (root.activePlayer.canGoNext) {
+                    root.activePlayer.next();
+                }
             }
         }
     }

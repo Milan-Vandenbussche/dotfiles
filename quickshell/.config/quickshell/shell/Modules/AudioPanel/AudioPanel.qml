@@ -22,11 +22,6 @@ PopupWindow {
     implicitWidth: 320
     implicitHeight: card.implicitHeight
 
-    Shortcut {
-        enabled: Audio.panelOpen
-        sequence: "Escape"
-        onActivated: Audio.panelOpen = false
-    }
 
     Timer {
         id: leaveTimer
