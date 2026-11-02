@@ -1,0 +1,125 @@
+#!/usr/bin/env python3
+import os
+import glob
+import json
+import math
+import colorsys
+import sys
+from PIL import Image
+
+WALLPAPERS_DIR = os.path.expanduser(os.environ.get("WALLPAPERS_DIR", "~/Pictures/wallpapers"))
+STATE_DIR = os.path.expanduser(os.environ.get("XDG_STATE_HOME", "~/.local/state") + "/theme")
+CACHE_FILE = os.path.join(STATE_DIR, "wallpaper-cache.json")
+
+os.makedirs(STATE_DIR, exist_ok=True)
+
+# Load existing cache
+cache = {}
+if os.path.isfile(CACHE_FILE):
+    try:
+        with open(CACHE_FILE, "r") as f:
+            cache = json.load(f)
+    except Exception:
+        cache = {}
+
+def analyze_image(path):
+    try:
+        with Image.open(path) as img:
+            img = img.convert("RGB")
+            img.thumbnail((48, 48))
+            
+            if hasattr(img, "get_flattened_data"):
+                pixels = img.get_flattened_data()
+            else:
+                pixels = list(img.getdata())
+            
+            total_weight = 0.0
+            weighted_hue_x = 0.0
+            weighted_hue_y = 0.0
+            avg_s = 0.0
+            avg_v = 0.0
+
+            for r, g, b in pixels:
+                h, s, v = colorsys.rgb_to_hsv(r / 255.0, g / 255.0, b / 255.0)
+                avg_s += s
+                avg_v += v
+                weight = s * v
+                if weight > 0.05:
+                    rad = h * 2 * math.pi
+                    weighted_hue_x += math.cos(rad) * weight
+                    weighted_hue_y += math.sin(rad) * weight
+                    total_weight += weight
+
+            count = len(pixels) or 1
+            avg_s /= count
+            avg_v /= count
+
+            if total_weight < 0.1 or avg_s < 0.12:
+                hue = -1.0 # Monochrome
+            else:
+                avg_rad = math.atan2(weighted_hue_y, weighted_hue_x)
+                if avg_rad < 0:
+                    avg_rad += 2 * math.pi
+                hue = round((avg_rad / (2 * math.pi)) * 360, 1)
+
+            return {
+                "hue": hue,
+                "brightness": round(avg_v, 2),
+                "saturation": round(avg_s, 2),
+                "mtime": os.path.getmtime(path)
+            }
+    except Exception:
+        return {
+            "hue": 999.0,
+            "brightness": 0.5,
+            "saturation": 0.0,
+            "mtime": os.path.getmtime(path) if os.path.exists(path) else 0
+        }
+
+# Find all images
+valid_exts = (".png", ".jpg", ".jpeg", ".webp")
+files = [
+    os.path.abspath(f)
+    for f in glob.glob(os.path.join(WALLPAPERS_DIR, "*"))
+    if f.lower().endswith(valid_exts) and os.path.isfile(f)
+]
+
+updated = False
+for path in files:
+    mtime = os.path.getmtime(path)
+    entry = cache.get(path)
+    if not entry or entry.get("mtime") != mtime:
+        cache[path] = analyze_image(path)
+        updated = True
+
+# Clean deleted files from cache
+to_delete = [p for p in cache if p not in files]
+if to_delete:
+    for p in to_delete:
+        del cache[p]
+    updated = True
+
+if updated:
+    try:
+        with open(CACHE_FILE + ".tmp", "w") as f:
+            json.dump(cache, f, indent=2)
+        os.replace(CACHE_FILE + ".tmp", CACHE_FILE)
+    except Exception:
+        pass
+
+# Sort key:
+# 1. Chromatic wallpapers ordered by Hue (0° to 360°: Red -> Orange -> Yellow -> Green -> Cyan -> Blue -> Purple -> Pink)
+# 2. Monochrome wallpapers at the end (sorted by brightness from dark to light)
+def sort_key(path):
+    info = cache.get(path, {})
+    hue = info.get("hue", 0)
+    b = info.get("brightness", 0)
+    if hue < 0:
+        return (1, b, path)
+    return (0, hue, path)
+
+files.sort(key=sort_key)
+
+# Print sorted paths
+for p in files:
+    print(p)

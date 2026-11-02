@@ -64,15 +64,15 @@ Item {
         root.pickerOpen = !root.pickerOpen;
     }
 
-    // Scan wallpaper folder for images
+    // Scan wallpaper folder for images sorted by color/hue
     Process {
         id: scanner
-        command: ["find", root.wallpapersFolder, "-maxdepth", "1", "-type", "f", "(", "-name", "*.png", "-o", "-name", "*.jpg", "-o", "-name", "*.jpeg", "-o", "-name", "*.webp", ")"]
+        command: ["wallpaper-sort"]
         running: true
         stdout: StdioCollector {
             onTextChanged: {
                 if (!text) return;
-                const lines = text.trim().split("\n").filter(l => l.length > 0).sort();
+                const lines = text.trim().split("\n").filter(l => l.length > 0);
                 root.wallpapers = lines;
             }
         }
