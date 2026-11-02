@@ -1,1 +1,5 @@
 singleton Hardware 1.0 Hardware.qml
+singleton Audio 1.0 Audio.qml
+singleton Power 1.0 Power.qml
+singleton Network 1.0 Network.qml
+singleton Bluetooth 1.0 Bluetooth.qml
