@@ -41,6 +41,28 @@ Item {
 
     property bool panelOpen: false
 
+    // Initial startup suppression to prevent OSD popup on login
+    property bool _ready: false
+    Timer {
+        interval: 1200
+        running: true
+        onTriggered: root._ready = true
+    }
+
+    signal volumeAdjusted(real vol, bool isMuted)
+
+    onVolumeChanged: {
+        if (_ready) {
+            root.volumeAdjusted(root.volume, root.muted);
+        }
+    }
+
+    onMutedChanged: {
+        if (_ready) {
+            root.volumeAdjusted(root.volume, root.muted);
+        }
+    }
+
     // IPC handler allowing keybinds or scripts to control audio
     IpcHandler {
         target: "audio"

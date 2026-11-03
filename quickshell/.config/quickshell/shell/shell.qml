@@ -5,12 +5,27 @@ import "Theme"
 import "Services"
 import "Modules/Bar"
 import "Modules/WallpaperPicker"
+import "Modules/PowerMenu"
+import "Modules/Osd"
 
 ShellRoot {
     // 1. Preloaded Wallpaper Picker Modal Overlay
     WallpaperPicker {}
 
-    // 2. Bar Panel per Screen
+    // 2. Centered Power Menu Overlay with Confirmation
+    PowerMenu {}
+
+    // 3. OSD Overlay per Screen (Volume & Brightness feedback)
+    Variants {
+        model: Quickshell.screens
+
+        Osd {
+            required property var modelData
+            screen: modelData
+        }
+    }
+
+    // 4. Bar Panel per Screen
     Variants {
         model: Quickshell.screens
 
