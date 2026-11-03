@@ -14,7 +14,6 @@ Item {
     property bool hasBattery: false
 
     property int brightnessPercentage: 50
-    property int maxBrightness: 15360
     property bool _ready: false
 
     signal brightnessAdjusted(int percent)
@@ -26,33 +25,32 @@ Item {
         onTriggered: root._ready = true
     }
 
-    // Read max brightness
-    FileView {
-        id: maxBrightnessFile
-        path: "/sys/class/backlight/intel_backlight/max_brightness"
-        onLoaded: {
-            const val = parseInt(text().trim(), 10);
-            if (!isNaN(val) && val > 0) root.maxBrightness = val;
-        }
-    }
-
-    // Read actual brightness
-    FileView {
-        id: actualBrightnessFile
-        path: "/sys/class/backlight/intel_backlight/actual_brightness"
-        watchChanges: true
-        onLoaded: {
-            const cur = parseInt(text().trim(), 10);
-            if (!isNaN(cur) && root.maxBrightness > 0) {
-                const pct = Math.round((cur / root.maxBrightness) * 100);
-                if (root._ready && pct !== root.brightnessPercentage) {
-                    root.brightnessPercentage = pct;
-                    root.brightnessAdjusted(pct);
-                } else {
-                    root.brightnessPercentage = pct;
+    // Process to adjust or query brightness accurately from brightnessctl
+    Process {
+        id: brightnessProc
+        running: false
+        stdout: StdioCollector {
+            onTextChanged: {
+                if (!text) return;
+                const parts = text.trim().split(",");
+                if (parts.length >= 4) {
+                    const raw = parts[3].replace("%", "").trim();
+                    const pct = parseInt(raw, 10);
+                    if (!isNaN(pct)) {
+                        root.brightnessPercentage = pct;
+                        if (root._ready) {
+                            root.brightnessAdjusted(pct);
+                        }
+                    }
                 }
             }
         }
+    }
+
+    // Initial brightness query on startup
+    Component.onCompleted: {
+        brightnessProc.command = ["brightnessctl", "-m", "info"];
+        brightnessProc.running = true;
     }
 
     // Read battery capacity directly from sysfs
@@ -77,7 +75,7 @@ Item {
         }
     }
 
-    // Periodic refresh
+    // Periodic refresh for battery only (never touches brightness)
     Timer {
         interval: 10000
         running: true
@@ -85,7 +83,6 @@ Item {
         onTriggered: {
             capacityFile.reload();
             statusFile.reload();
-            actualBrightnessFile.reload();
         }
     }
 
@@ -122,25 +119,18 @@ Item {
 
     // Brightness adjustment on laptop
     function setBrightness(pct) {
-        const clamped = Math.max(5, Math.min(100, pct));
-        Quickshell.execDetached(["brightnessctl", "-e4", "-n2", "set", clamped + "%"]);
-        root.brightnessPercentage = clamped;
-        if (root._ready) {
-            root.brightnessAdjusted(clamped);
-        }
+        const clamped = Math.max(1, Math.min(100, pct));
+        brightnessProc.command = ["brightnessctl", "-m", "set", clamped + "%"];
+        brightnessProc.running = true;
     }
 
     function stepBrightness(delta) {
-        const next = Math.max(5, Math.min(100, root.brightnessPercentage + delta));
         if (delta > 0) {
-            Quickshell.execDetached(["brightnessctl", "-e4", "-n2", "set", "5%+"]);
+            brightnessProc.command = ["brightnessctl", "-m", "set", "5%+"];
         } else {
-            Quickshell.execDetached(["brightnessctl", "-e4", "-n2", "set", "5%-"]);
+            brightnessProc.command = ["brightnessctl", "-m", "set", "5%-"];
         }
-        root.brightnessPercentage = next;
-        if (root._ready) {
-            root.brightnessAdjusted(next);
-        }
+        brightnessProc.running = true;
     }
 
     // Power actions
