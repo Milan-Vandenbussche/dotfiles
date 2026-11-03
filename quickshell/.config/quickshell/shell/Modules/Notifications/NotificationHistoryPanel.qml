@@ -155,21 +155,23 @@ PopupWindow {
                 }
             }
 
-            // Divider line
+            // Divider line (visible only when items exist)
             Rectangle {
                 width: parent.width
                 height: 1
                 color: Qt.rgba(Colors.outline_variant.r, Colors.outline_variant.g, Colors.outline_variant.b, 0.25)
+                visible: Notifications.history.length > 0
             }
 
             // ── 2. SCROLLABLE HISTORY LIST ───────────────────────────────
             ListView {
                 id: historyList
                 width: parent.width
-                height: Math.min(360, count * 76)
+                height: Math.min(360, count * 72)
                 clip: true
                 spacing: 6
                 boundsBehavior: Flickable.StopAtBounds
+                visible: Notifications.history.length > 0
 
                 model: Notifications.history
 
@@ -177,7 +179,7 @@ PopupWindow {
                     id: histRow
                     required property var modelData
                     width: historyList.width
-                    implicitHeight: rowCol.implicitHeight + 12
+                    implicitHeight: rowCol.implicitHeight + 14
                     radius: Appearance.radiusSmall
                     color: histHover.containsMouse ? Colors.surface_container_high : Qt.rgba(Colors.surface_container_high.r, Colors.surface_container_high.g, Colors.surface_container_high.b, 0.3)
                     border.color: modelData.isCritical ? Colors.error : "transparent"
@@ -187,64 +189,75 @@ PopupWindow {
                         id: rowCol
                         anchors.fill: parent
                         anchors.margins: 8
-                        spacing: 2
+                        spacing: 3
 
-                        Row {
+                        // Header with cleanly anchored remove cross
+                        Item {
                             width: parent.width
-                            spacing: 6
+                            height: 16
 
-                            Item {
-                                width: 14
-                                height: 14
+                            Row {
+                                anchors.left: parent.left
+                                anchors.right: delBtn.left
+                                anchors.rightMargin: 8
                                 anchors.verticalCenter: parent.verticalCenter
+                                spacing: 6
 
-                                Image {
-                                    anchors.fill: parent
-                                    source: histRow.modelData.appIcon ? Quickshell.iconPath(histRow.modelData.appIcon, 14) : ""
-                                    fillMode: Image.PreserveAspectFit
-                                    visible: status === Image.Ready
+                                Item {
+                                    width: 14
+                                    height: 14
+                                    anchors.verticalCenter: parent.verticalCenter
+
+                                    Image {
+                                        anchors.fill: parent
+                                        source: histRow.modelData.appIcon ? Quickshell.iconPath(histRow.modelData.appIcon, 14) : ""
+                                        fillMode: Image.PreserveAspectFit
+                                        visible: status === Image.Ready
+                                    }
+
+                                    Icon {
+                                        anchors.centerIn: parent
+                                        name: "󰂚"
+                                        size: 12
+                                        color: Colors.primary
+                                        visible: !histRow.modelData.appIcon || parent.children[0].status !== Image.Ready
+                                    }
                                 }
 
-                                Icon {
-                                    anchors.centerIn: parent
-                                    name: "󰂚"
-                                    size: 12
-                                    color: Colors.primary
-                                    visible: !histRow.modelData.appIcon || parent.children[0].status !== Image.Ready
+                                Text {
+                                    text: histRow.modelData.appName
+                                    color: Colors.on_surface_variant
+                                    font.family: Appearance.fontFamily
+                                    font.pixelSize: 10
+                                    font.bold: true
+                                    elide: Text.ElideRight
+                                    maximumLineCount: 1
+                                    anchors.verticalCenter: parent.verticalCenter
+                                }
+
+                                Text {
+                                    text: "• " + histRow.modelData.time
+                                    color: Qt.rgba(Colors.on_surface_variant.r, Colors.on_surface_variant.g, Colors.on_surface_variant.b, 0.7)
+                                    font.family: Appearance.fontFamily
+                                    font.pixelSize: 9
+                                    anchors.verticalCenter: parent.verticalCenter
                                 }
                             }
 
-                            Text {
-                                width: parent.width - 60
-                                text: histRow.modelData.appName
-                                color: Colors.on_surface_variant
-                                font.family: Appearance.fontFamily
-                                font.pixelSize: 10
-                                font.bold: true
-                                elide: Text.ElideRight
-                                anchors.verticalCenter: parent.verticalCenter
-                            }
-
-                            Text {
-                                text: histRow.modelData.time
-                                color: Colors.on_surface_variant
-                                font.family: Appearance.fontFamily
-                                font.pixelSize: 9
-                                anchors.verticalCenter: parent.verticalCenter
-                            }
-
-                            // Remove item
+                            // Remove item button safely anchored inside frame
                             Rectangle {
-                                width: 14
-                                height: 14
-                                radius: 7
-                                color: delHover.containsMouse ? Qt.rgba(Colors.error.r, Colors.error.g, Colors.error.b, 0.2) : "transparent"
+                                id: delBtn
+                                anchors.right: parent.right
                                 anchors.verticalCenter: parent.verticalCenter
+                                width: 16
+                                height: 16
+                                radius: 8
+                                color: delHover.containsMouse ? Qt.rgba(Colors.error.r, Colors.error.g, Colors.error.b, 0.2) : "transparent"
 
                                 Icon {
                                     anchors.centerIn: parent
                                     name: "󰅖"
-                                    size: 9
+                                    size: 10
                                     color: delHover.containsMouse ? Colors.error : Colors.on_surface_variant
                                 }
 
@@ -286,30 +299,6 @@ PopupWindow {
                         anchors.fill: parent
                         hoverEnabled: true
                     }
-                }
-            }
-
-            // Empty state
-            Column {
-                width: parent.width
-                spacing: 8
-                visible: Notifications.history.length === 0
-                topPadding: 16
-                bottomPadding: 16
-
-                Icon {
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    name: "󰂚"
-                    size: 32
-                    color: Qt.rgba(Colors.on_surface_variant.r, Colors.on_surface_variant.g, Colors.on_surface_variant.b, 0.4)
-                }
-
-                Text {
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    text: "No notifications"
-                    color: Colors.on_surface_variant
-                    font.family: Appearance.fontFamily
-                    font.pixelSize: Appearance.fontSmall
                 }
             }
         }

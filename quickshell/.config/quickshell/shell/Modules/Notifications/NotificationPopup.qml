@@ -72,57 +72,67 @@ PanelWindow {
                     spacing: Appearance.spacingSmall
 
                     // ── 1. HEADER (ICON, APP NAME, TIME, CLOSE BUTTON) ──
-                    Row {
+                    Item {
                         width: parent.width
-                        spacing: Appearance.spacingSmall
+                        height: 20
 
-                        Item {
-                            width: 18
-                            height: 18
+                        Row {
+                            anchors.left: parent.left
+                            anchors.right: closeBtn.left
+                            anchors.rightMargin: 8
                             anchors.verticalCenter: parent.verticalCenter
+                            spacing: Appearance.spacingSmall
 
-                            Image {
-                                anchors.fill: parent
-                                source: notifCard.modelData.appIcon ? Quickshell.iconPath(notifCard.modelData.appIcon, 18) : ""
-                                fillMode: Image.PreserveAspectFit
-                                visible: status === Image.Ready
+                            Item {
+                                width: 18
+                                height: 18
+                                anchors.verticalCenter: parent.verticalCenter
+
+                                Image {
+                                    anchors.fill: parent
+                                    source: notifCard.modelData.appIcon ? Quickshell.iconPath(notifCard.modelData.appIcon, 18) : ""
+                                    fillMode: Image.PreserveAspectFit
+                                    visible: status === Image.Ready
+                                }
+
+                                Icon {
+                                    anchors.centerIn: parent
+                                    name: notifCard.modelData.isCritical ? "󰅚" : "󰂚"
+                                    size: 16
+                                    color: notifCard.modelData.isCritical ? Colors.error : Colors.primary
+                                    visible: !notifCard.modelData.appIcon || parent.children[0].status !== Image.Ready
+                                }
                             }
 
-                            Icon {
-                                anchors.centerIn: parent
-                                name: notifCard.modelData.isCritical ? "󰅚" : "󰂚"
-                                size: 16
-                                color: notifCard.modelData.isCritical ? Colors.error : Colors.primary
-                                visible: !notifCard.modelData.appIcon || parent.children[0].status !== Image.Ready
+                            Text {
+                                text: notifCard.modelData.appName
+                                color: Colors.on_surface_variant
+                                font.family: Appearance.fontFamily
+                                font.pixelSize: Appearance.fontSmall
+                                font.bold: true
+                                elide: Text.ElideRight
+                                maximumLineCount: 1
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+
+                            Text {
+                                text: "• " + notifCard.modelData.time
+                                color: Qt.rgba(Colors.on_surface_variant.r, Colors.on_surface_variant.g, Colors.on_surface_variant.b, 0.7)
+                                font.family: Appearance.fontFamily
+                                font.pixelSize: 10
+                                anchors.verticalCenter: parent.verticalCenter
                             }
                         }
 
-                        Text {
-                            width: parent.width - 90
-                            text: notifCard.modelData.appName
-                            color: Colors.on_surface_variant
-                            font.family: Appearance.fontFamily
-                            font.pixelSize: Appearance.fontSmall
-                            font.bold: true
-                            elide: Text.ElideRight
-                            anchors.verticalCenter: parent.verticalCenter
-                        }
-
-                        Text {
-                            text: notifCard.modelData.time
-                            color: Colors.on_surface_variant
-                            font.family: Appearance.fontFamily
-                            font.pixelSize: 10
-                            anchors.verticalCenter: parent.verticalCenter
-                        }
-
-                        // Close Button
+                        // Close Button securely anchored to right
                         Rectangle {
-                            implicitWidth: 18
-                            implicitHeight: 18
-                            radius: 9
-                            color: closeHover.containsMouse ? Qt.rgba(Colors.on_surface.r, Colors.on_surface.g, Colors.on_surface.b, 0.15) : "transparent"
+                            id: closeBtn
+                            anchors.right: parent.right
                             anchors.verticalCenter: parent.verticalCenter
+                            width: 20
+                            height: 20
+                            radius: 10
+                            color: closeHover.containsMouse ? Qt.rgba(Colors.on_surface.r, Colors.on_surface.g, Colors.on_surface.b, 0.15) : "transparent"
 
                             Icon {
                                 anchors.centerIn: parent

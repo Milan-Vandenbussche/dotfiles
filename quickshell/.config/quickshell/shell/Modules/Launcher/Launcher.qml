@@ -182,7 +182,7 @@ PanelWindow {
                     readonly property bool isSelected: appsList.currentIndex === index
 
                     width: appsList.width - 10
-                    height: 50
+                    height: 42
                     radius: Appearance.radiusSmall
                     color: rowCard.isSelected ? Colors.surface_container_high : (rowHover.containsMouse ? Qt.rgba(Colors.surface_container_high.r, Colors.surface_container_high.g, Colors.surface_container_high.b, 0.5) : "transparent")
                     border.color: rowCard.isSelected ? Colors.primary : "transparent"
@@ -196,13 +196,13 @@ PanelWindow {
 
                         // App Icon
                         Item {
-                            width: 32
-                            height: 32
+                            width: 26
+                            height: 26
                             anchors.verticalCenter: parent.verticalCenter
 
                             Image {
                                 anchors.fill: parent
-                                source: rowCard.modelData.icon ? Quickshell.iconPath(rowCard.modelData.icon, 32) : ""
+                                source: rowCard.modelData.icon ? Quickshell.iconPath(rowCard.modelData.icon, 26) : ""
                                 fillMode: Image.PreserveAspectFit
                                 visible: status === Image.Ready
                             }
@@ -210,37 +210,22 @@ PanelWindow {
                             Icon {
                                 anchors.centerIn: parent
                                 name: "󰣆"
-                                size: 24
+                                size: 20
                                 color: rowCard.isSelected ? Colors.primary : Colors.on_surface_variant
                                 visible: !rowCard.modelData.icon || parent.children[0].status !== Image.Ready
                             }
                         }
 
-                        // App Title & Subtitle
-                        Column {
-                            width: parent.width - 60
+                        // Clean App Title Only
+                        Text {
+                            width: parent.width - 50
+                            text: rowCard.modelData.name
+                            color: Colors.on_surface
+                            font.family: Appearance.fontFamily
+                            font.pixelSize: Appearance.fontNormal
+                            font.bold: rowCard.isSelected
+                            elide: Text.ElideRight
                             anchors.verticalCenter: parent.verticalCenter
-                            spacing: 2
-
-                            Text {
-                                width: parent.width
-                                text: rowCard.modelData.name
-                                color: Colors.on_surface
-                                font.family: Appearance.fontFamily
-                                font.pixelSize: Appearance.fontNormal
-                                font.bold: rowCard.isSelected
-                                elide: Text.ElideRight
-                            }
-
-                            Text {
-                                width: parent.width
-                                text: rowCard.modelData.genericName || rowCard.modelData.comment || rowCard.modelData.execString || ""
-                                color: Colors.on_surface_variant
-                                font.family: Appearance.fontFamily
-                                font.pixelSize: Appearance.fontSmall
-                                elide: Text.ElideRight
-                                visible: text.length > 0
-                            }
                         }
                     }
 

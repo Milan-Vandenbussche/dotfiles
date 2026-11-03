@@ -169,7 +169,7 @@ PanelWindow {
                 spacing: Appearance.spacingSmall
 
                 Icon {
-                    name: "⏻"
+                    name: "󰐥"
                     size: Appearance.iconMedium
                     color: Colors.primary
                     anchors.verticalCenter: parent.verticalCenter
@@ -359,7 +359,7 @@ PanelWindow {
 
                         Icon {
                             anchors.horizontalCenter: parent.horizontalCenter
-                            name: "⏻"
+                            name: "󰐥"
                             size: 32
                             color: hover3.containsMouse || root.focusedIndex === 3 ? Colors.error : Colors.on_surface
                         }

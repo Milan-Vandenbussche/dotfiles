@@ -23,7 +23,7 @@ Item {
 
         Icon {
             anchors.centerIn: parent
-            name: "⏻"
+            name: "󰐥"
             size: Appearance.iconSmall
             color: mouseArea.containsMouse || Power.menuOpen ? Colors.error : Colors.primary
 
