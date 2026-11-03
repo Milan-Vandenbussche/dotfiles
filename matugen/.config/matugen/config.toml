@@ -37,3 +37,8 @@ output_path = "~/.config/gtk-4.0/gtk.css"
 input_path = "~/.config/matugen/templates/prismlauncher-theme.json.tpl"
 output_path = "~/.local/share/PrismLauncher/themes/Matugen/theme.json"
 
+[templates.spotify]
+input_path = "~/.config/matugen/templates/spotify-color.ini.tpl"
+output_path = "~/.config/spicetify/Themes/Matugen/color.ini"
+
+
