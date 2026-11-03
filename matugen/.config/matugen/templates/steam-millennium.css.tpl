@@ -8,6 +8,7 @@
   --gpColor-Green: {{ colors.primary.default.hex }} !important;
   --client-color-accent: {{ colors.primary.default.hex }} !important;
   --account-menu-focus: {{ colors.primary.default.hex }} !important;
+  --FocusColorDisabled: {{ colors.outline.default.hex }} !important;
 
   /* Surfaces & Backgrounds */
   --gpBackground-Root: {{ colors.surface.default.hex }} !important;
@@ -23,7 +24,7 @@
   /* Focus & Selection */
   --gpFocus: {{ colors.primary.default.hex }} !important;
   --gpFocusDark: {{ colors.primary_container.default.hex }} !important;
-  --gpFocusLight: {{ colors.primary_fixed_dim.default.hex }} !important;
+  --gpFocusLight: {{ colors.primary.default.hex }} !important;
 
   /* State Colors */
   --gpColor-Red: {{ colors.error.default.hex }} !important;
@@ -31,26 +32,99 @@
   --gpColor-Yellow: {{ colors.tertiary.default.hex }} !important;
 }
 
-/* Play button and primary buttons */
-.playbutton_PlayButton_22eZ7,
-.DialogButton.Primary,
-button[type="submit"].DialogButton {
-  background: {{ colors.primary.default.hex }} !important;
-  color: {{ colors.on_primary.default.hex }} !important;
+/* Base App Background */
+html, body, #root,
+[class*="steamdesktop_Root_"],
+[class*="steamdesktop_Wrapper_"] {
+  background-color: {{ colors.surface.default.hex }} !important;
+  color: {{ colors.on_surface.default.hex }} !important;
 }
 
-/* Navigation active tab */
-.supernav_ActiveTab_2C11y,
-.supernav_Tab_2F6XG.supernav_ActiveTab_2C11y {
+/* Top Navigation Bar */
+[class*="titlebarcontrols_Root_"],
+[class*="supernav_Root_"] {
+  background-color: {{ colors.surface_container_low.default.hex }} !important;
+}
+
+/* Top Navigation Active Tab */
+[class*="supernav_ActiveTab_"],
+[class*="supernav_Tab_"][class*="supernav_ActiveTab_"] {
   color: {{ colors.primary.default.hex }} !important;
   border-bottom: 2px solid {{ colors.primary.default.hex }} !important;
 }
 
+/* Game List Sidebar */
+[class*="gamelistbar_Container_"] {
+  background-color: {{ colors.surface_container_low.default.hex }} !important;
+}
+
+/* Game List Entry - Hover & Selected */
+[class*="gamelistentry_Container_"]:hover {
+  background-color: {{ colors.surface_container_high.default.hex }}99 !important;
+}
+
+[class*="gamelistentry_Container_"][class*="gamelistentry_Selected_"] {
+  background-color: {{ colors.primary_container.default.hex }} !important;
+  color: {{ colors.on_primary_container.default.hex }} !important;
+}
+
+[class*="gamelistentry_Container_"][class*="gamelistentry_Selected_"] [class*="gamelistentry_GameLabel_"] {
+  color: {{ colors.on_primary_container.default.hex }} !important;
+}
+
+/* Play Button */
+[class*="playbutton_PlayButton_"] {
+  background: {{ colors.primary.default.hex }} !important;
+  color: {{ colors.on_primary.default.hex }} !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 14px {{ colors.primary.default.hex }}50 !important;
+}
+
+[class*="playbutton_PlayButton_"]:hover {
+  filter: brightness(1.12) !important;
+}
+
+[class*="playbutton_PlayButton_"] [class*="playbutton_Text_"],
+[class*="playbutton_PlayButton_"] svg {
+  color: {{ colors.on_primary.default.hex }} !important;
+  fill: {{ colors.on_primary.default.hex }} !important;
+}
+
+/* Dialog & Action Buttons */
+.DialogButton.Primary,
+button[type="submit"].DialogButton,
+[class*="dialogbutton_Primary_"] {
+  background: {{ colors.primary.default.hex }} !important;
+  color: {{ colors.on_primary.default.hex }} !important;
+  border-radius: 6px !important;
+}
+
+.DialogButton.Primary:hover,
+button[type="submit"].DialogButton:hover,
+[class*="dialogbutton_Primary_"]:hover {
+  filter: brightness(1.1) !important;
+}
+
+/* Quick Access / Shelves / Cards */
+[class*="libraryhome_Container_"],
+[class*="libraryhome_HomeShelf_"] {
+  background-color: {{ colors.surface.default.hex }} !important;
+}
+
 /* Scrollbars */
+::-webkit-scrollbar {
+  width: 8px !important;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
 ::-webkit-scrollbar-thumb {
   background: {{ colors.outline_variant.default.hex }}80 !important;
   border-radius: 4px !important;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: {{ colors.primary.default.hex }} !important;
 }

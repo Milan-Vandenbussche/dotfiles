@@ -305,6 +305,14 @@ hl.window_rule({
     opacity = "0.85 0.80",
 })
 
+-- Steam window opacity and blur
+hl.window_rule({
+    name    = "steam-opacity",
+    match   = { class = "^([sS]team)$" },
+    opacity = "0.88 0.82",
+})
+
+
 
 
 
