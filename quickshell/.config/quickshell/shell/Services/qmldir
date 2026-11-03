@@ -4,3 +4,5 @@ singleton Power 1.0 Power.qml
 singleton Network 1.0 Network.qml
 singleton Bluetooth 1.0 Bluetooth.qml
 singleton Wallpaper 1.0 Wallpaper.qml
+singleton Notifications 1.0 Notifications.qml
+singleton Launcher 1.0 Launcher.qml

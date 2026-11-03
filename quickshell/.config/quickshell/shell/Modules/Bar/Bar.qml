@@ -60,7 +60,9 @@ Rectangle {
             parentWindow: root.barWindow
         }
 
-        NotificationWidget {}
+        NotificationWidget {
+            parentWindow: root.barWindow
+        }
 
         PowerMenuPopup {
             parentWindow: root.barWindow
