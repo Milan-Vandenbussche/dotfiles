@@ -7,11 +7,8 @@ import "Modules/Bar"
 import "Modules/WallpaperPicker"
 
 ShellRoot {
-    // 1. Wallpaper Picker Modal Overlay (lazily loaded to avoid ghost layer surfaces)
-    Loader {
-        active: Wallpaper.pickerOpen
-        sourceComponent: WallpaperPicker {}
-    }
+    // 1. Preloaded Wallpaper Picker Modal Overlay
+    WallpaperPicker {}
 
     // 2. Bar Panel per Screen
     Variants {

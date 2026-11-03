@@ -11,7 +11,18 @@ PanelWindow {
 
     WlrLayershell.namespace: "qs-picker"
     WlrLayershell.layer: WlrLayer.Overlay
-    WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
+    WlrLayershell.keyboardFocus: Wallpaper.pickerOpen ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
+
+    visible: Wallpaper.pickerOpen
+
+    onVisibleChanged: {
+        if (visible) {
+            grid.forceActiveFocus();
+        } else {
+            dialogCard.focus = false;
+            grid.focus = false;
+        }
+    }
 
     anchors {
         top: true
@@ -21,10 +32,6 @@ PanelWindow {
     }
 
     color: "transparent"
-
-    Component.onCompleted: {
-        grid.forceActiveFocus();
-    }
 
     // Dim backdrop (clicking outside closes the picker)
     Rectangle {

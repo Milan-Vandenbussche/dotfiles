@@ -55,6 +55,9 @@ Item {
         function random(): void {
             root.random();
         }
+        function shuffle(): void {
+            root.shuffle();
+        }
     }
 
     function togglePicker() {
@@ -102,6 +105,9 @@ Item {
         const targetMode = mode || root.selectedMode || "dark";
         const targetScheme = scheme || root.selectedScheme || "scheme-tonal-spot";
 
+        // Instantly trigger awww image crossfade with 0ms delay on click
+        Quickshell.execDetached(["awww", "img", path, "--transition-type", "fade", "--transition-duration", "0.5", "--transition-fps", "60"]);
+
         root.busy = true;
         root.statusMessage = "Generating palette and applying theme...";
         applyProc.command = ["theme-apply", path, "--mode", targetMode, "--scheme", targetScheme];
@@ -115,5 +121,9 @@ Item {
         const list = available.length > 0 ? available : root.wallpapers;
         const chosen = list[Math.floor(Math.random() * list.length)];
         root.apply(chosen);
+    }
+
+    function shuffle() {
+        root.random();
     }
 }

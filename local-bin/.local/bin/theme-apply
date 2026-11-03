@@ -110,6 +110,11 @@ fi
 OLD_HYPR_HASH=""
 [[ -f "$GEN_DIR/hypr-colors.conf" ]] && OLD_HYPR_HASH="$(sha256sum "$GEN_DIR/hypr-colors.conf" | cut -d' ' -f1)"
 
+# Update wallpaper via awww immediately so transition begins with 0ms perceived latency
+if command -v awww >/dev/null 2>&1 && pgrep -x awww-daemon >/dev/null 2>&1; then
+    awww img "$IMAGE" --transition-type fade --transition-duration 0.5 --transition-fps 60 || true
+fi
+
 echo "Generating palette from: $IMAGE (mode: $MODE, scheme: $SCHEME)..."
 
 # Run matugen
@@ -126,10 +131,6 @@ cat << EOF > "$TMP_STATE"
 EOF
 mv "$TMP_STATE" "$STATE_FILE"
 
-# Update wallpaper via awww if running (with snappy 0.5s fade)
-if command -v awww >/dev/null 2>&1 && pgrep -x awww-daemon >/dev/null 2>&1; then
-    awww img "$IMAGE" --transition-type fade --transition-duration 0.5 --transition-fps 60 || true
-fi
 
 # Reload Hyprland borders
 NEW_HYPR_HASH=""
