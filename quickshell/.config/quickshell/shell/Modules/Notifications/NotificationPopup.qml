@@ -15,6 +15,7 @@ PanelWindow {
     WlrLayershell.namespace: "qs-notifications"
     WlrLayershell.layer: WlrLayer.Overlay
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
+    WlrLayershell.exclusionMode: ExclusionMode.Ignore
 
     anchors {
         top: true

@@ -13,6 +13,7 @@ PanelWindow {
     WlrLayershell.namespace: "qs-osd"
     WlrLayershell.layer: WlrLayer.Overlay
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
+    WlrLayershell.exclusionMode: ExclusionMode.Ignore
 
     // Click-through: mouse clicks pass through the window completely
     mask: Region {}
