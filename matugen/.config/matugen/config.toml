@@ -13,3 +13,22 @@ output_path = "~/.local/state/theme/generated/colors.json"
 input_path = "~/.config/matugen/templates/hypr-colors.conf.tpl"
 output_path = "~/.local/state/theme/generated/hypr-colors.conf"
 
+[templates.kitty_colors]
+input_path = "~/.config/matugen/templates/kitty-colors.conf.tpl"
+output_path = "~/.local/state/theme/generated/kitty-colors.conf"
+
+[templates.btop_theme]
+input_path = "~/.config/matugen/templates/btop.theme.tpl"
+output_path = "~/.config/btop/themes/matugen.theme"
+
+[templates.nvim_colors]
+input_path = "~/.config/matugen/templates/nvim-colors.lua.tpl"
+output_path = "~/.local/state/theme/generated/nvim-colors.lua"
+
+[templates.gtk3]
+input_path = "~/.config/matugen/templates/gtk.css.tpl"
+output_path = "~/.config/gtk-3.0/gtk.css"
+
+[templates.gtk4]
+input_path = "~/.config/matugen/templates/gtk.css.tpl"
+output_path = "~/.config/gtk-4.0/gtk.css"

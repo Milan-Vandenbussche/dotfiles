@@ -150,4 +150,21 @@ fi
 # Notify running Quickshell instances to reload colors immediately
 qs -c shell ipc call theme reload >/dev/null 2>&1 || qs ipc call theme reload >/dev/null 2>&1 || true
 
+# Live reload running Kitty terminals
+if pgrep -x kitty >/dev/null 2>&1; then
+    killall -SIGUSR1 kitty >/dev/null 2>&1 || true
+fi
+
+# Live reload running Neovim instances if any
+for sock in "${XDG_RUNTIME_DIR:-/run/user/$UID}"/nvim.*; do
+    if [[ -S "$sock" ]]; then
+        nvim --server "$sock" --remote-send "<Cmd>lua require(\"lazyvim.config\").colorscheme()<CR>" >/dev/null 2>&1 || true
+    fi
+done
+
+# Sync GTK dark preference
+if command -v gsettings >/dev/null 2>&1; then
+    gsettings set org.gnome.desktop.interface color-scheme "prefer-dark" >/dev/null 2>&1 || true
+fi
+
 echo "Theme applied successfully."
