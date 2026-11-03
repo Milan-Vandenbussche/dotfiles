@@ -7,8 +7,11 @@ import "Modules/Bar"
 import "Modules/WallpaperPicker"
 
 ShellRoot {
-    // 1. Wallpaper Picker Modal Overlay
-    WallpaperPicker {}
+    // 1. Wallpaper Picker Modal Overlay (lazily loaded to avoid ghost layer surfaces)
+    Loader {
+        active: Wallpaper.pickerOpen
+        sourceComponent: WallpaperPicker {}
+    }
 
     // 2. Bar Panel per Screen
     Variants {
@@ -21,7 +24,9 @@ ShellRoot {
             screen: modelData
 
             WlrLayershell.namespace: "qs-bar"
-            WlrLayershell.layer: WlrLayer.Top
+            WlrLayershell.layer: layer_top_enum
+
+            readonly property var layer_top_enum: WlrLayer.Top
 
             anchors {
                 top: true

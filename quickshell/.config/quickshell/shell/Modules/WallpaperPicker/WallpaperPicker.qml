@@ -11,15 +11,7 @@ PanelWindow {
 
     WlrLayershell.namespace: "qs-picker"
     WlrLayershell.layer: WlrLayer.Overlay
-    WlrLayershell.keyboardFocus: Wallpaper.pickerOpen ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
-
-    visible: Wallpaper.pickerOpen
-
-    onVisibleChanged: {
-        if (visible) {
-            grid.forceActiveFocus();
-        }
-    }
+    WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
 
     anchors {
         top: true
@@ -30,6 +22,9 @@ PanelWindow {
 
     color: "transparent"
 
+    Component.onCompleted: {
+        grid.forceActiveFocus();
+    }
 
     // Dim backdrop (clicking outside closes the picker)
     Rectangle {
@@ -53,6 +48,12 @@ PanelWindow {
         border.color: Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, 0.40)
         border.width: 1
         clip: true
+
+        focus: true
+        Keys.onEscapePressed: (event) => {
+            Wallpaper.pickerOpen = false;
+            event.accepted = true;
+        }
 
         // Prevent clicking inside the card from closing the dialog
         MouseArea {
@@ -92,11 +93,15 @@ PanelWindow {
                 }
             }
 
-            Keys.onEscapePressed: Wallpaper.pickerOpen = false
-            Keys.onReturnPressed: {
+            Keys.onEscapePressed: (event) => {
+                Wallpaper.pickerOpen = false;
+                event.accepted = true;
+            }
+            Keys.onReturnPressed: (event) => {
                 if (grid.currentIndex >= 0 && grid.currentIndex < Wallpaper.wallpapers.length) {
                     Wallpaper.apply(Wallpaper.wallpapers[grid.currentIndex]);
                 }
+                event.accepted = true;
             }
 
             delegate: Item {
@@ -118,85 +123,58 @@ PanelWindow {
                     anchors.fill: parent
                     radius: Appearance.radiusMedium
                     color: Colors.surface_container_high
-                    border.color: cellItem.isCurrent ? Colors.primary : (cellMouse.containsMouse ? Colors.outline : Qt.rgba(Colors.outline_variant.r, Colors.outline_variant.g, Colors.outline_variant.b, 0.3))
+                    border.color: cellItem.isCurrent ? Colors.primary : (thumbHover.containsMouse ? Colors.outline_variant : "transparent")
                     border.width: cellItem.isCurrent ? 2 : 1
-                    scale: cellMouse.containsMouse ? 1.02 : 1.0
 
-                    Behavior on scale { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
-                    Behavior on border.color { ColorAnimation { duration: 150 } }
+                    Behavior on border.color { ColorAnimation { duration: Appearance.animDurationFast } }
 
-                    // Thumbnail image
                     Image {
                         id: thumb
                         anchors.fill: parent
-                        anchors.margins: 2
-                        source: "file://" + cellItem.modelData
+                        anchors.margins: 4
+                        source: cellItem.modelData
                         fillMode: Image.PreserveAspectCrop
-                        sourceSize.width: 320
-                        sourceSize.height: 180
                         asynchronous: true
                         cache: true
-                    }
+                        sourceSize.width: 320
+                        sourceSize.height: 200
 
-                    // Bottom file name label
-                    Rectangle {
-                        anchors.bottom: parent.bottom
-                        anchors.left: parent.left
-                        anchors.right: parent.right
-                        height: 28
-                        color: Qt.rgba(Colors.surface.r, Colors.surface.g, Colors.surface.b, 0.85)
-                        radius: Appearance.radiusSmall
-
-                        Text {
+                        Rectangle {
                             anchors.fill: parent
-                            anchors.leftMargin: Appearance.spacingSmall
-                            anchors.rightMargin: Appearance.spacingSmall
-                            verticalAlignment: Text.AlignVCenter
-                            text: cellItem.fileName
-                            color: cellItem.isCurrent ? Colors.primary : Colors.on_surface
-                            font.family: Appearance.fontFamily
-                            font.pixelSize: Appearance.fontSmall
-                            elide: Text.ElideMiddle
+                            color: Colors.surface_container_highest
+                            visible: thumb.status === Image.Loading
+
+                            Text {
+                                anchors.centerIn: parent
+                                text: "󰸉"
+                                color: Colors.on_surface_variant
+                                font.family: Appearance.fontFamily
+                                font.pixelSize: Appearance.iconMedium
+                            }
                         }
                     }
 
-                    // Active badge
+                    // Active checkmark badge
                     Rectangle {
                         visible: cellItem.isCurrent
                         anchors.top: parent.top
-                        anchors.topMargin: 6
                         anchors.right: parent.right
-                        anchors.rightMargin: 6
-                        implicitHeight: 22
-                        implicitWidth: badgeRow.implicitWidth + 12
-                        radius: Appearance.radiusSmall
+                        anchors.margins: 8
+                        width: 24
+                        height: 24
+                        radius: 12
                         color: Colors.primary
 
-                        Row {
-                            id: badgeRow
+                        Icon {
                             anchors.centerIn: parent
-                            spacing: 4
-
-                            Icon {
-                                name: "󰄬"
-                                size: Appearance.iconSmall
-                                color: Colors.on_primary
-                                anchors.verticalCenter: parent.verticalCenter
-                            }
-
-                            Text {
-                                text: "Active"
-                                color: Colors.on_primary
-                                font.family: Appearance.fontFamily
-                                font.pixelSize: Appearance.fontSmall
-                                font.bold: true
-                                anchors.verticalCenter: parent.verticalCenter
-                            }
+                            name: "󰄬"
+                            size: 14
+                            color: Colors.on_primary
                         }
                     }
 
                     MouseArea {
-                        id: cellMouse
+                        id: thumbHover
                         anchors.fill: parent
                         hoverEnabled: true
                         cursorShape: Qt.PointingHandCursor
@@ -209,49 +187,31 @@ PanelWindow {
             }
         }
 
-        // ── BOTTOM BAR (Shuffle Icon Button Only) ────────────────────────
+        // ── BOTTOM BAR (MINIMAL SHUFFLE BUTTON ONLY) ──────────────────────
         Item {
             id: footer
             anchors.bottom: parent.bottom
             anchors.left: parent.left
             anchors.right: parent.right
-            height: 48
+            height: 52
 
-            // Subtle pulsing busy line when a theme is actively applying
             Rectangle {
-                visible: Wallpaper.busy
-                anchors.top: parent.top
-                anchors.left: parent.left
-                anchors.right: parent.right
-                height: 2
-                color: Colors.primary
-
-                SequentialAnimation on opacity {
-                    running: Wallpaper.busy
-                    loops: Animation.Infinite
-                    NumberAnimation { from: 0.3; to: 1.0; duration: 400; easing.type: Easing.InOutSine }
-                    NumberAnimation { from: 1.0; to: 0.3; duration: 400; easing.type: Easing.InOutSine }
-                }
-            }
-
-            // Shuffle Button: Icon only, centered
-            Rectangle {
+                id: shuffleBtn
                 anchors.centerIn: parent
-                implicitWidth: 36
-                implicitHeight: 36
-                radius: Appearance.radiusSmall
-                color: shuffleHover.containsMouse ? Colors.surface_container_high : "transparent"
-                border.color: shuffleHover.containsMouse ? Colors.primary : Qt.rgba(Colors.outline_variant.r, Colors.outline_variant.g, Colors.outline_variant.b, 0.3)
+                width: 44
+                height: 44
+                radius: 22
+                color: shuffleHover.containsMouse ? Colors.primary : Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, 0.15)
+                border.color: Colors.primary
                 border.width: 1
 
                 Behavior on color { ColorAnimation { duration: Appearance.animDurationFast } }
-                Behavior on border.color { ColorAnimation { duration: Appearance.animDurationFast } }
 
                 Icon {
                     anchors.centerIn: parent
                     name: "󰒝"
-                    size: Appearance.iconLarge
-                    color: shuffleHover.containsMouse ? Colors.on_surface : Colors.primary
+                    size: 20
+                    color: shuffleHover.containsMouse ? Colors.on_primary : Colors.primary
                 }
 
                 MouseArea {
@@ -259,7 +219,7 @@ PanelWindow {
                     anchors.fill: parent
                     hoverEnabled: true
                     cursorShape: Qt.PointingHandCursor
-                    onClicked: Wallpaper.random()
+                    onClicked: Wallpaper.shuffle()
                 }
             }
         }

@@ -5,6 +5,7 @@ import "../../Services"
 import "../../Components"
 import "../AudioPanel"
 import "../NetworkPanel"
+import "../BluetoothPanel"
 
 Row {
     id: root
@@ -127,10 +128,16 @@ Row {
                 if (mouse.button === Qt.RightButton) {
                     Bluetooth.togglePower();
                 } else {
-                    Bluetooth.openManager();
+                    Bluetooth.togglePanel();
                 }
             }
         }
+    }
+
+    // Anchored Bluetooth Panel
+    BluetoothPanel {
+        parentWindow: root.parentWindow
+        anchorItem: btItem
     }
 
     // ── 4. Volume (with Scroll & Right-click Mute) ───────────────────────
