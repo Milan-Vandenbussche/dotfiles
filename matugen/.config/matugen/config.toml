@@ -47,7 +47,8 @@ output_path = "~/.config/spicetify/Themes/Matugen/user.css"
 
 [templates.steam]
 input_path = "~/.config/matugen/templates/steam-millennium.css.tpl"
-output_path = "~/.local/share/Steam/steamui/skins/Matugen/webkit.css"
+output_path = "~/.local/share/Steam/millennium/themes/Matugen/webkit.css"
+
 
 
 
