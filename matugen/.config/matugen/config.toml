@@ -49,6 +49,15 @@ output_path = "~/.config/spicetify/Themes/Matugen/user.css"
 input_path = "~/.config/matugen/templates/steam-millennium.css.tpl"
 output_path = "~/.local/share/Steam/millennium/themes/Matugen/webkit.css"
 
+[templates.vesktop]
+input_path = "~/.config/matugen/templates/vesktop.theme.css.tpl"
+output_path = "~/.config/vesktop/themes/Matugen.theme.css"
+
+[templates.vencord]
+input_path = "~/.config/matugen/templates/vesktop.theme.css.tpl"
+output_path = "~/.config/Vencord/themes/Matugen.theme.css"
+
+
 
 
 

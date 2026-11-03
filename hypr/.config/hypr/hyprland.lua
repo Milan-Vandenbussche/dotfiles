@@ -312,6 +312,14 @@ hl.window_rule({
     opacity = "0.88 0.82",
 })
 
+-- Vesktop / Discord window opacity and blur
+hl.window_rule({
+    name    = "vesktop-opacity",
+    match   = { class = "^([vV]esktop|[dD]iscord)$" },
+    opacity = "0.88 0.82",
+})
+
+
 
 
 
