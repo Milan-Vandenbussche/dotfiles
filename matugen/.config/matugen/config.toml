@@ -45,5 +45,10 @@ output_path = "~/.config/spicetify/Themes/Matugen/color.ini"
 input_path = "~/.config/matugen/templates/spotify-user.css.tpl"
 output_path = "~/.config/spicetify/Themes/Matugen/user.css"
 
+[templates.steam]
+input_path = "~/.config/matugen/templates/steam-millennium.css.tpl"
+output_path = "~/.local/share/Steam/steamui/skins/Matugen/webkit.css"
+
+
 
 
