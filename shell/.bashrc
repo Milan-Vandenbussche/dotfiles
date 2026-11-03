@@ -10,3 +10,5 @@ alias grep='grep --color=auto'
 PS1='[\u@\h \W]\$ '
 export PATH="$HOME/.local/bin:$PATH"
 fastfetch
+
+export PATH=$PATH:/home/ciganycenter/.spicetify

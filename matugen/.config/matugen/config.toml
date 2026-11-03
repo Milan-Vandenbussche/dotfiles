@@ -41,4 +41,9 @@ output_path = "~/.local/share/PrismLauncher/themes/Matugen/theme.json"
 input_path = "~/.config/matugen/templates/spotify-color.ini.tpl"
 output_path = "~/.config/spicetify/Themes/Matugen/color.ini"
 
+[templates.spotify_css]
+input_path = "~/.config/matugen/templates/spotify-user.css.tpl"
+output_path = "~/.config/spicetify/Themes/Matugen/user.css"
+
+
 

@@ -167,10 +167,11 @@ if command -v gsettings >/dev/null 2>&1; then
     gsettings set org.gnome.desktop.interface color-scheme "prefer-dark" >/dev/null 2>&1 || true
 fi
 
-# Live reload Spotify via Spicetify if installed
+# Live reload Spotify via Spicetify without killing the process
 if command -v spicetify >/dev/null 2>&1; then
-    spicetify apply >/dev/null 2>&1 &
+    spicetify -n refresh >/dev/null 2>&1 &
 fi
+
 
 
 echo "Theme applied successfully."

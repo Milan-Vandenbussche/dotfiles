@@ -298,6 +298,14 @@ hl.window_rule({
     no_focus = true,
 })
 
+-- Spotify window opacity and blur
+hl.window_rule({
+    name    = "spotify-opacity",
+    match   = { class = "^([sS]potify)$" },
+    opacity = "0.85 0.80",
+})
+
+
 -- waywall
 hl.window_rule({
     name        = "waywall-overlay",
