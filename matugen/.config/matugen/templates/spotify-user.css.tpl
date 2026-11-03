@@ -48,20 +48,29 @@
   border-top: 1px solid {{ colors.outline_variant.default.hex }}40 !important;
 }
 
-/* Primary Play Button */
-.main-playButton-PlayButton,
+/* Play Button Container & Circle */
+.main-playButton-PlayButton {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.main-playButton-PlayButton > button,
 .main-playButton-primary,
-button[data-testid="play-button"],
 .main-playPauseButton-button {
   background-color: {{ colors.primary.default.hex }} !important;
   color: {{ colors.on_primary.default.hex }} !important;
+  border-radius: 50% !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
 }
-.main-playButton-PlayButton:hover,
+
+.main-playButton-PlayButton > button:hover,
 .main-playButton-primary:hover,
-button[data-testid="play-button"]:hover,
 .main-playPauseButton-button:hover {
-  transform: scale(1.05);
+  transform: scale(1.06);
 }
+
 
 /* Progress bar & Volume bar */
 .x-progressBar-fillColor,

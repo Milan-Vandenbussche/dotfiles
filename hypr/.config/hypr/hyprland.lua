@@ -306,6 +306,8 @@ hl.window_rule({
 })
 
 
+
+
 -- waywall
 hl.window_rule({
     name        = "waywall-overlay",
