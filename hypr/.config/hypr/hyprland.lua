@@ -7,7 +7,6 @@ require("host")
 
 local terminal    = "kitty"
 local fileManager = "nautilus"
-local menu        = "wofi"
 
 -------------------
 ---- AUTOSTART ----
@@ -17,7 +16,7 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("/usr/lib/polkit-kde-authentication-agent-1")
     hl.exec_cmd("awww-daemon")
     hl.exec_cmd("theme-apply --restore")
-    hl.exec_cmd("waybar")
+    hl.exec_cmd("uwsm app -- qs -c shell -d")
     hl.exec_cmd("hyprpm reload -n && hyprctl reload")
 end)
 
@@ -368,10 +367,10 @@ register_nbtrackr_rule("nbtrackr-tag",   { tag = "nboverlay" })
 --     ignore_alpha = 0.9,
 -- })
 
--- ── Quickshell bar layer blur ──────────────────────────────────────────
+-- ── Quickshell layer blur ──────────────────────────────────────────
 hl.layer_rule({
-    name         = "qs-bar-blur",
-    match        = { namespace = "^(qs-bar)$" },
+    name         = "qs-layers-blur",
+    match        = { namespace = "^(qs-.*)$" },
     blur         = true,
     ignore_alpha = 0.15,
 })
