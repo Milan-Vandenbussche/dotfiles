@@ -1,11 +1,13 @@
 brave-bin
 catppuccin-gtk-theme-mocha
+millennium-bin
 minecraft-ttf-git
 obs-pipewire-audio-capture
 pgadmin4-desktop
 phinger-cursors
 sddm-silent-theme
 spotify
+vesktop-bin
 waywall-working-git
 woeusb-ng
 yay

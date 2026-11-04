@@ -11,8 +11,6 @@ cmake
 copyq
 cups
 cups-pk-helper
-discord
-dunst
 efibootmgr
 ethtool
 fastfetch
@@ -55,7 +53,6 @@ nano
 nautilus
 neovim
 net-tools
-network-manager-applet
 networkmanager
 nmap
 nodejs
@@ -99,14 +96,12 @@ vim
 vulkan-intel
 vulkan-nouveau
 vulkan-radeon
-waybar
 wget
 wireless_tools
 wiremix
 wireplumber
 wl-clipboard
 wlr-randr
-wofi
 wpa_supplicant
 xdg-desktop-portal-hyprland
 xdg-utils
@@ -114,5 +109,4 @@ xf86-video-amdgpu
 xf86-video-ati
 xf86-video-nouveau
 xorg-xinit
-yad
 zram-generator
