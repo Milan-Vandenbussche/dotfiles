@@ -65,6 +65,7 @@ pipewire
 pipewire-alsa
 pipewire-jack
 pipewire-pulse
+playerctl
 polkit-kde-agent
 postgresql
 power-profiles-daemon
