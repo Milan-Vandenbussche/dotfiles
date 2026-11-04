@@ -1,115 +1,108 @@
 # Arch Desktop Dotfiles
 
-Plain dotfiles repository for reproducing the current Arch/Hyprland user environment.
+Reproducible Arch Linux + Hyprland user environment, powered by a handcrafted **Quickshell** desktop shell and dynamic **Material You (Matugen)** system-wide theming.
 
-This repo uses package folders directly, for example:
+Symlinks are managed with **GNU Stow**. Each top-level directory corresponds to a stowed package whose paths are relative to `$HOME`.
 
-```text
-hypr/.config/hypr
-waybar/.config/waybar
-wofi/.config/wofi
-kitty/.config/kitty
-```
+---
 
-GNU Stow manages the symlinks. Each top-level package folder contains paths relative to `$HOME`, so `waybar/.config/waybar` becomes `~/.config/waybar` when stowed.
+## Architecture & Shell Overview
 
-## What This Restores
+Legacy status bars, app launchers, and notification daemons (Waybar, Wofi, Dunst, Yad, Blueman, nm-applet) have been fully consolidated into a unified **Quickshell** setup located in [quickshell/.config/quickshell/shell/](quickshell/.config/quickshell/shell/):
 
-- Explicit official packages from `packages/pacman-explicit.txt`
-- Explicit AUR packages from `packages/aur-explicit.txt`
-- Hyprland, Waybar, Wofi, Kitty, UWSM, Fastfetch, Btop, Htop, CopyQ, shell settings, GTK settings, MIME associations, and user scripts
-- Desktop launchers and Wayland flags for Discord, Brave, and Steam
-- The selected wallpaper at `~/.local/share/wallpapers/wallhaven-6l5emq.png`
-- The Waywall config repo pinned in `waywall.lock`
+| Component | Keybind / Trigger | Description |
+| :--- | :--- | :--- |
+| **Bar** | *Autostart via uwsm* | Top status bar with dynamic workspace dots, window title, MPRIS media ticker, hardware stats, audio/network/bluetooth status, clock, and notification bell. |
+| **App Launcher** | `Super + Space` | Fuzzy application launcher with icon grid, categorizing and launching apps via `uwsm app --`. |
+| **Wallpaper Picker** | `Super + W` | Visual wallpaper thumbnail grid sorted by hue, with instant crossfade transitions via `awww` and shuffle button. |
+| **Audio Panel** | `Super + A` / Click Bar | PipeWire audio output/input stream selector, volume sliders, and app mixer. |
+| **Network Panel** | `Super + N` / Click Bar | Wi-Fi network scanner with WPA PSK passphrase entry and active connection management. |
+| **Bluetooth Panel** | `Super + B` / Click Bar | BlueZ device manager with device pairing, connect/disconnect, battery readouts, and discovery mode. |
+| **Power Menu** | `Super + F` / Click Bar | Centered power modal with action confirmation (Shut Down, Restart, Log Out via `uwsm stop`, Suspend). |
+| **OSD Popups** | Volume / Brightness Keys | Floating on-screen displays for volume and backlight adjustment without pushing tiled windows. |
+| **Notifications** | Desktop events / `Super + N` | In-house freedesktop notification server with sliding popup toasts and anchored history panel. |
 
-Browsers, OBS, LibreOffice, Discord, and other desktop apps are installed through the package manifests. Their profiles and runtime state are intentionally not committed.
+---
 
-The repository includes `git/.gitconfig`, which contains the current Git name and email, but never GitHub authentication. Authenticate GitHub CLI separately with `gh auth login` on each new machine.
+## Dynamic System-Wide Theming (Matugen)
 
-## Bootstrap
-
-From a fresh Arch install with a normal user account:
+Colors are dynamically derived from your current wallpaper using **Matugen** and applied instantly across the entire system via [theme-apply](local-bin/.local/bin/theme-apply):
 
 ```bash
-git clone <private-github-repo-url> ~/dotfiles
+# Apply a new wallpaper and recolor the entire system:
+theme-apply /path/to/wallpaper.png
+
+# Restore the theme based on the last selected wallpaper:
+theme-apply --restore
+```
+
+### Themed Applications & Live Reloading
+
+1. **Quickshell**: Real-time palette reload via `qs ipc call theme reload`.
+2. **Hyprland**: Dynamic active window borders and accent colors via `hypr-colors.conf`.
+3. **Kitty**: Colors generated to `~/.local/state/theme/generated/kitty-colors.conf` and hot-reloaded via `SIGUSR1`.
+4. **btop**: Themed via `~/.config/btop/themes/matugen.theme` with background transparency.
+5. **fastfetch**: Automatically inherits the dynamic primary ANSI color from Kitty.
+6. **Neovim (LazyVim)**: Dynamic palette loaded via `lua/plugins/theme.lua` with running instance RPC socket reloading.
+7. **GTK 3 & GTK 4**: Accent and destructive colors generated to `~/.config/gtk-3.0/gtk.css` and `~/.config/gtk-4.0/gtk.css`.
+8. **Prism Launcher**: Custom Qt palette generated to `~/.local/share/PrismLauncher/themes/Matugen/theme.json`.
+9. **Spotify**: Styled via Spicetify with transparent background panels and dynamic accent controls.
+10. **Vesktop (Discord)**: Powered by the Midnight engine with dual-injected QuickCSS for live recoloring.
+11. **Steam**: Styled via Millennium with dynamic primary buttons, game selection, and navigation accents.
+
+### Adding a New Themed Application
+
+To add dynamic Material You theming to any new app:
+1. Create a template in `matugen/.config/matugen/templates/<app>.tpl` using Matugen color tokens (e.g., `{{ colors.primary.default.hex }}`).
+2. Register the template in [matugen/.config/matugen/config.toml](matugen/.config/matugen/config.toml).
+3. Include or reference the generated output in the app's config.
+4. Add a live-reload hook to [local-bin/.local/bin/theme-apply](local-bin/.local/bin/theme-apply) (if the app supports reloading without restart).
+
+---
+
+## Bootstrap & First-Run Setup
+
+From a fresh Arch install with your user account:
+
+```bash
+git clone <repo-url> ~/dotfiles
 cd ~/dotfiles
 bin/bootstrap.sh
 ```
 
-Useful options:
+### Initial Theme Generation
+Before launching Hyprland for the first time, generate the initial color state files:
 
 ```bash
-bin/bootstrap.sh --configs-only
-bin/bootstrap.sh --packages-only
-bin/bootstrap.sh --host current-desktop
+~/.local/bin/theme-apply --restore
 ```
 
-The bootstrap backs up conflicting live files before asking Stow to create the links. The backup directory is:
+### Host-Specific Profiles
+Hardware-dependent settings (monitors, GPU environment variables, device rules) are organized under `hosts/`:
+- Desktop: `hosts/current-desktop/hypr/host.lua`
+- Laptop: `hosts/laptop/hypr/host.lua`
 
-```text
-~/.local/state/dotfiles-backup/<timestamp>/
-```
-
-To apply only configuration symlinks after GNU Stow is installed:
-
+Apply host configuration:
 ```bash
-bin/bootstrap.sh --configs-only
+DOTFILES_HOST=<host-name> bin/bootstrap.sh --configs-only
 ```
 
-## Host-Specific Hyprland Config
-
-The shared Hyprland config requires:
-
-```text
-~/.config/hypr/host.lua
-```
-
-The current desktop profile lives at:
-
-```text
-hosts/current-desktop/hypr/host.lua
-```
-
-That file contains hardware-specific settings such as monitor names, refresh rates, positions, and the current mouse device rule. For another machine, add a new folder under `hosts/` and run:
-
+### Hyprland Plugins & SDDM Setup
 ```bash
-DOTFILES_HOST=<new-host> bin/bootstrap.sh --configs-only
+# Hypr-DarkWindow Plugin
+hyprpm update
+hyprpm add https://github.com/micha4w/Hypr-DarkWindow
+hyprpm enable Hypr-DarkWindow
+hyprpm reload
 ```
 
-The Steam launcher is also host-specific because the current desktop has GPU-selection environment variables. Copy and adapt `hosts/current-desktop/host-local/.local/bin/steam-launch.sh` for another computer, or omit it to use Steam's standard launcher.
+---
 
-## Refresh Package Lists
+## Refreshing Package Lists
 
-After installing or removing packages intentionally:
-
+After intentionally installing or removing packages:
 ```bash
 bin/refresh-packages.sh
 ```
 
-Review the diff before committing.
-
-## Before Pushing
-
-Run:
-
-```bash
-bin/check-secrets.sh
-git status --short
-```
-
-`check-secrets.sh` is a simple grep-style guard. It does not prove the repo is secret-free, so still review changes before pushing.
-
-Create the private GitHub repo with:
-
-```bash
-gh repo create dotfiles --private --source=. --remote=origin --push
-```
-
-
-### FIX HYPRLAND PLUGIN ON PACKAGE UPDATE
-
-hyprpm update
-#hyprpm purge-cache
-hyprpm add https://github.com/micha4w/Hypr-DarkWindow
-hyprpm enable Hypr-DarkWindow
-hyprpm reload
+Review git diffs before committing changes.
