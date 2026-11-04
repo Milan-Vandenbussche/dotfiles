@@ -162,9 +162,35 @@ for sock in "${XDG_RUNTIME_DIR:-/run/user/$UID}"/nvim.*; do
     fi
 done
 
-# Sync GTK dark preference
+# Recolor Adwaita folder icons to match wallpaper palette
+if command -v recolor-folders >/dev/null 2>&1; then
+    recolor-folders >/dev/null 2>&1 || true
+elif [[ -x "$HOME/dotfiles/local-bin/.local/bin/recolor-folders" ]]; then
+    "$HOME/dotfiles/local-bin/.local/bin/recolor-folders" >/dev/null 2>&1 || true
+fi
+
+# Dynamically reload GTK3/GTK4 styling and icon theme via GSettings
 if command -v gsettings >/dev/null 2>&1; then
     gsettings set org.gnome.desktop.interface color-scheme "prefer-dark" >/dev/null 2>&1 || true
+
+    # Bounce icon-theme to invalidate icon cache in all running GTK apps
+    gsettings set org.gnome.desktop.interface icon-theme "Adwaita" >/dev/null 2>&1 || true
+    sleep 0.05
+    gsettings set org.gnome.desktop.interface icon-theme "Adwaita-Matugen" >/dev/null 2>&1 || true
+
+    # Bounce gtk-theme so GTK4/Libadwaita apps re-parse user gtk.css live
+    gsettings set org.gnome.desktop.interface gtk-theme "HighContrast" >/dev/null 2>&1 || true
+    sleep 0.05
+    gsettings set org.gnome.desktop.interface gtk-theme "Adwaita" >/dev/null 2>&1 || true
+fi
+
+# If Nautilus is lingering in the background with no open windows, terminate the daemon
+# so the next launched window cleanly reads fresh assets.
+if pgrep -x nautilus >/dev/null 2>&1; then
+    nautilus_open_windows=$(hyprctl clients -j 2>/dev/null | grep -c '"class": *"org.gnome.Nautilus"' || echo 0)
+    if (( nautilus_open_windows == 0 )); then
+        nautilus -q >/dev/null 2>&1 || true
+    fi
 fi
 
 # Live reload Spotify via Spicetify without killing the process

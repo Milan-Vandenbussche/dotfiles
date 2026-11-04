@@ -1,0 +1,105 @@
+#!/usr/bin/env python3
+import json
+import glob
+import os
+import re
+import colorsys
+import subprocess
+
+colors_file = os.path.expanduser('~/.local/state/theme/generated/colors.json')
+if not os.path.exists(colors_file):
+    exit(0)
+
+with open(colors_file) as f:
+    colors = json.load(f)
+
+primary = colors.get('primary', '#96ccf8')
+
+def hex_to_rgb(h):
+    return [int(h.lstrip('#')[i:i+2], 16) / 255.0 for i in (0, 2, 4)]
+
+def rgb_to_hex(rgb):
+    return '#{:02x}{:02x}{:02x}'.format(
+        int(max(0, min(1, rgb[0])) * 255),
+        int(max(0, min(1, rgb[1])) * 255),
+        int(max(0, min(1, rgb[2])) * 255)
+    )
+
+r, g, b = hex_to_rgb(primary)
+h, l, s = colorsys.rgb_to_hls(r, g, b)
+
+# Scale lightness and saturation relative to primary color to maintain Adwaita folder depth:
+# Adwaita uses 5 blue gradient stops:
+# #438de6: back flap (dark shade)
+# #62a0ea: main folder body (primary mid tone)
+# #a4caee: front flap (lighter highlight)
+# #afd4ff: top gloss highlight (brightest)
+# #c0d5ea: subtle edge border
+c_back  = rgb_to_hex(colorsys.hls_to_rgb(h, max(0.25, min(0.60, l * 0.72)), min(1.0, s * 0.95)))
+c_main  = rgb_to_hex(colorsys.hls_to_rgb(h, max(0.35, min(0.72, l * 0.85)), s))
+c_front = rgb_to_hex(colorsys.hls_to_rgb(h, max(0.45, min(0.85, l * 1.05)), min(1.0, s * 0.90)))
+c_light = rgb_to_hex(colorsys.hls_to_rgb(h, max(0.55, min(0.94, l * 1.15)), min(1.0, s * 0.80)))
+c_edge  = rgb_to_hex(colorsys.hls_to_rgb(h, max(0.50, min(0.90, l * 1.10)), min(1.0, s * 0.65)))
+
+replacements = {
+    '#438de6': c_back,
+    '#62a0ea': c_main,
+    '#a4caee': c_front,
+    '#afd4ff': c_light,
+    '#c0d5ea': c_edge,
+}
+
+base_dir = os.path.expanduser('~/.local/share/icons/Adwaita-Matugen')
+index_path = os.path.join(base_dir, 'index.theme')
+
+index_content = """[Icon Theme]
+Name=Adwaita-Matugen
+Comment=Adwaita with dynamic Material You folder colors
+Inherits=Adwaita,hicolor
+Directories=scalable/places,scalable/mimetypes,scalable/status
+
+[scalable/places]
+Context=Places
+Size=128
+MinSize=8
+MaxSize=512
+Type=Scalable
+
+[scalable/mimetypes]
+Context=MimeTypes
+Size=128
+MinSize=8
+MaxSize=512
+Type=Scalable
+
+[scalable/status]
+Context=Status
+Size=128
+MinSize=8
+MaxSize=512
+Type=Scalable
+"""
+
+os.makedirs(base_dir, exist_ok=True)
+with open(index_path, 'w', encoding='utf-8') as f:
+    f.write(index_content)
+
+targets = [
+    ('/usr/share/icons/Adwaita/scalable/places/*.svg', os.path.join(base_dir, 'scalable/places')),
+    ('/usr/share/icons/Adwaita/scalable/mimetypes/inode-directory.svg', os.path.join(base_dir, 'scalable/mimetypes')),
+    ('/usr/share/icons/Adwaita/scalable/status/folder-open.svg', os.path.join(base_dir, 'scalable/status')),
+]
+
+for src_pattern, dst_dir in targets:
+    os.makedirs(dst_dir, exist_ok=True)
+    for src_path in glob.glob(src_pattern):
+        fname = os.path.basename(src_path)
+        with open(src_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        for old_color, new_color in replacements.items():
+            content = re.sub(re.escape(old_color), new_color, content, flags=re.IGNORECASE)
+        dst_path = os.path.join(dst_dir, fname)
+        with open(dst_path, 'w', encoding='utf-8') as f:
+            f.write(content)
+
+subprocess.run(['gtk-update-icon-cache', '-f', '-q', base_dir], check=False)
