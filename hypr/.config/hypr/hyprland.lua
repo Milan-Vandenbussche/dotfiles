@@ -100,7 +100,7 @@ hl.config({
 
         blur = {
             enabled            = true,
-            size               = 6,
+            size               = 5,
             passes             = 3,
             noise              = 0.04,
             contrast           = 1.05,
@@ -318,11 +318,11 @@ hl.window_rule({
     opacity = "0.88 0.82",
 })
 
--- Nautilus window opacity and blur
+-- Nautilus window opacity and blur (darkened with minimal see-through)
 hl.window_rule({
     name    = "nautilus-opacity",
     match   = { class = "^(org.gnome.Nautilus)$" },
-    opacity = "0.90 0.85",
+    opacity = "0.94 0.90",
 })
 
 
