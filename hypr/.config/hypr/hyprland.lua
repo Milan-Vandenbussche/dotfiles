@@ -318,6 +318,14 @@ hl.window_rule({
     opacity = "0.88 0.82",
 })
 
+-- Nautilus window opacity and blur
+hl.window_rule({
+    name    = "nautilus-opacity",
+    match   = { class = "^(org.gnome.Nautilus)$" },
+    opacity = "0.90 0.85",
+})
+
+
 
 
 
