@@ -33,10 +33,10 @@ PanelWindow {
 
     color: "transparent"
 
-    // Dim backdrop (clicking outside closes the picker)
+    // Transparent click-outside backdrop (no dimming or darkening)
     Rectangle {
         anchors.fill: parent
-        color: Qt.rgba(0, 0, 0, 0.65)
+        color: "transparent"
 
         MouseArea {
             anchors.fill: parent

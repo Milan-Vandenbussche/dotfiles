@@ -370,7 +370,7 @@ register_nbtrackr_rule("nbtrackr-tag",   { tag = "nboverlay" })
 -- ── Quickshell layer blur ──────────────────────────────────────────
 hl.layer_rule({
     name         = "qs-layers-blur",
-    match        = { namespace = "^(qs-.*)$" },
+    match        = { namespace = "^(qs-bar|qs-panel|qs-launcher|qs-osd)$" },
     blur         = true,
     ignore_alpha = 0.15,
 })
