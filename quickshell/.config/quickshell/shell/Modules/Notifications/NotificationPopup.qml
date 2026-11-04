@@ -48,22 +48,27 @@ PanelWindow {
                 width: 340
                 implicitHeight: cardContent.implicitHeight + Appearance.spacingMedium * 2
                 radius: Appearance.radiusMedium
-                color: Qt.rgba(Colors.surface_container.r, Colors.surface_container.g, Colors.surface_container.b, 0.95)
-                border.color: modelData.isCritical ? Colors.error : Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, 0.40)
-                border.width: modelData.isCritical ? 2 : 1
+                color: cardClick.containsMouse ? Qt.rgba(Colors.surface_container_high.r, Colors.surface_container_high.g, Colors.surface_container_high.b, 0.98) : Qt.rgba(Colors.surface_container.r, Colors.surface_container.g, Colors.surface_container.b, 0.95)
+                border.color: cardClick.containsMouse ? Colors.primary : (modelData.isCritical ? Colors.error : Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, 0.40))
+                border.width: modelData.isCritical || cardClick.containsMouse ? 2 : 1
                 clip: true
+
+                // Clickable whole-card mouse area
+                MouseArea {
+                    id: cardClick
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: Notifications.openNotification(notifCard.modelData, notifCard.modelData.internalId)
+                }
 
                 // Auto-dismiss timer (paused on hover)
                 Timer {
                     id: dismissTimer
                     interval: notifCard.modelData.timeout
-                    running: !hoverHandler.hovered && !notifCard.modelData.isCritical
+                    running: !cardClick.containsMouse && !notifCard.modelData.isCritical
                     repeat: false
                     onTriggered: Notifications.dismissPopup(notifCard.modelData.internalId)
-                }
-
-                HoverHandler {
-                    id: hoverHandler
                 }
 
                 Column {
@@ -128,6 +133,7 @@ PanelWindow {
                         // Close Button securely anchored to right
                         Rectangle {
                             id: closeBtn
+                            z: 2
                             anchors.right: parent.right
                             anchors.verticalCenter: parent.verticalCenter
                             width: 20
@@ -189,6 +195,7 @@ PanelWindow {
 
                             delegate: Rectangle {
                                 required property var modelData
+                                z: 2
                                 implicitWidth: Math.max(60, actionText.implicitWidth + 16)
                                 implicitHeight: 26
                                 radius: Appearance.radiusSmall

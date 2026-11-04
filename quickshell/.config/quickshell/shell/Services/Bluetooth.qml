@@ -147,9 +147,4 @@ Item {
             Quickshell.execDetached(["bluetoothctl", "remove", dev.address]);
         }
     }
-
-    function openManager() {
-        root.panelOpen = false;
-        Quickshell.execDetached(["blueman-manager"]);
-    }
 }

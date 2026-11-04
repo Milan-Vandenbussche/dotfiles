@@ -181,9 +181,20 @@ PopupWindow {
                     width: historyList.width
                     implicitHeight: rowCol.implicitHeight + 14
                     radius: Appearance.radiusSmall
-                    color: histHover.containsMouse ? Colors.surface_container_high : Qt.rgba(Colors.surface_container_high.r, Colors.surface_container_high.g, Colors.surface_container_high.b, 0.3)
-                    border.color: modelData.isCritical ? Colors.error : "transparent"
-                    border.width: modelData.isCritical ? 1 : 0
+                    color: histClick.containsMouse ? Colors.surface_container_high : Qt.rgba(Colors.surface_container_high.r, Colors.surface_container_high.g, Colors.surface_container_high.b, 0.3)
+                    border.color: histClick.containsMouse ? Colors.primary : (modelData.isCritical ? Colors.error : "transparent")
+                    border.width: modelData.isCritical || histClick.containsMouse ? 1 : 0
+
+                    MouseArea {
+                        id: histClick
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: {
+                            Notifications.openNotification(histRow.modelData);
+                            Notifications.panelOpen = false;
+                        }
+                    }
 
                     Column {
                         id: rowCol
@@ -247,6 +258,7 @@ PopupWindow {
                             // Remove item button safely anchored inside frame
                             Rectangle {
                                 id: delBtn
+                                z: 2
                                 anchors.right: parent.right
                                 anchors.verticalCenter: parent.verticalCenter
                                 width: 16
@@ -292,12 +304,6 @@ PopupWindow {
                             elide: Text.ElideRight
                             visible: text.length > 0
                         }
-                    }
-
-                    MouseArea {
-                        id: histHover
-                        anchors.fill: parent
-                        hoverEnabled: true
                     }
                 }
             }

@@ -437,49 +437,6 @@ PopupWindow {
                     }
                 }
             }
-
-            // Divider line
-            Rectangle {
-                width: parent.width
-                height: 1
-                color: Qt.rgba(Colors.outline_variant.r, Colors.outline_variant.g, Colors.outline_variant.b, 0.25)
-            }
-
-            // ── 5. FOOTER: ADVANCED SETTINGS (blueman) ───────────────────
-            Rectangle {
-                width: parent.width
-                implicitHeight: 28
-                radius: Appearance.radiusSmall
-                color: advHover.containsMouse ? Colors.surface_container_high : "transparent"
-
-                Row {
-                    anchors.centerIn: parent
-                    spacing: 6
-
-                    Icon {
-                        name: "󰒓"
-                        size: Appearance.iconSmall
-                        color: advHover.containsMouse ? Colors.primary : Colors.on_surface_variant
-                        anchors.verticalCenter: parent.verticalCenter
-                    }
-
-                    Text {
-                        text: "Advanced Settings (blueman)"
-                        color: advHover.containsMouse ? Colors.primary : Colors.on_surface_variant
-                        font.family: Appearance.fontFamily
-                        font.pixelSize: Appearance.fontSmall
-                        anchors.verticalCenter: parent.verticalCenter
-                    }
-                }
-
-                MouseArea {
-                    id: advHover
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: Bluetooth.openManager()
-                }
-            }
         }
     }
 }

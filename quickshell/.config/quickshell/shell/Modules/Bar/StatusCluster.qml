@@ -251,4 +251,32 @@ Row {
             }
         }
     }
+
+    // ── 6. System Monitor (btop) ─────────────────────────────────────────
+    Rectangle {
+        id: btopItem
+        implicitWidth: 26
+        implicitHeight: 26
+        radius: Appearance.radiusSmall
+        color: btopHover.containsMouse ? Colors.surface_container_high : "transparent"
+
+        Behavior on color { ColorAnimation { duration: Appearance.animDurationFast } }
+
+        Icon {
+            anchors.centerIn: parent
+            name: "󰍛"
+            size: Appearance.iconMedium
+            color: btopHover.containsMouse ? Colors.on_surface : Colors.primary
+        }
+
+        MouseArea {
+            id: btopHover
+            anchors.fill: parent
+            hoverEnabled: true
+            cursorShape: Qt.PointingHandCursor
+            onClicked: {
+                Quickshell.execDetached(["uwsm", "app", "--", "kitty", "-e", "btop"]);
+            }
+        }
+    }
 }
