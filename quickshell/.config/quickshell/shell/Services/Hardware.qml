@@ -11,8 +11,7 @@ Item {
 
     // Battery Detection
     readonly property bool hasBattery: {
-        if (!UPower.displayDevice) return false;
-        return UPower.displayDevice.type === UPowerDeviceType.Battery;
+        return Power.hasBattery || (UPower.displayDevice && UPower.displayDevice.isPresent);
     }
 
     // Bluetooth Detection

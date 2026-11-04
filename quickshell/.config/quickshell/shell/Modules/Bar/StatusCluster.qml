@@ -6,6 +6,7 @@ import "../../Components"
 import "../AudioPanel"
 import "../NetworkPanel"
 import "../BluetoothPanel"
+import "../BatteryPanel"
 
 Row {
     id: root
@@ -249,7 +250,27 @@ Row {
             onWheel: (wheel) => {
                 Power.stepBrightness(wheel.angleDelta.y > 0 ? 5 : -5);
             }
+
+            onEntered: {
+                batPanel.cancelLeave();
+                Power.batteryPanelOpen = true;
+            }
+
+            onExited: {
+                batPanel.startLeave();
+            }
+
+            onClicked: {
+                Power.batteryPanelOpen = !Power.batteryPanelOpen;
+            }
         }
+    }
+
+    // Anchored Battery Panel
+    BatteryPanel {
+        id: batPanel
+        parentWindow: root.parentWindow
+        anchorItem: batItem
     }
 
     // ── 6. System Monitor (btop) ─────────────────────────────────────────

@@ -8,10 +8,17 @@ Item {
     id: root
 
     property bool menuOpen: false
+    property bool batteryPanelOpen: false
 
     property int batteryPercentage: 100
+    property string batteryStatus: "Full"
     property bool isCharging: false
     property bool hasBattery: false
+    property int energyNow: 0
+    property int energyFull: 0
+    property int powerNow: 0
+    property string timeRemainingText: "Fully charged"
+    property string currentProfile: "performance"
 
     property int brightnessPercentage: 50
     property bool _ready: false
@@ -47,10 +54,79 @@ Item {
         }
     }
 
-    // Initial brightness query on startup
+    // Query active power profile via powerprofilesctl
+    Process {
+        id: profileQueryProc
+        command: ["powerprofilesctl", "get"]
+        running: false
+        stdout: StdioCollector {
+            onTextChanged: {
+                if (!text) return;
+                const p = text.trim();
+                if (p.length > 0) root.currentProfile = p;
+            }
+        }
+    }
+
+    function queryProfile() {
+        profileQueryProc.command = ["powerprofilesctl", "get"];
+        profileQueryProc.running = true;
+    }
+
+    function setProfile(profileName) {
+        root.currentProfile = profileName;
+        Quickshell.execDetached(["powerprofilesctl", "set", profileName]);
+    }
+
+    function updateTimeRemaining() {
+        const st = (root.batteryStatus || "").trim().toLowerCase();
+        if (st === "full") {
+            root.timeRemainingText = "Fully charged";
+            return;
+        }
+
+        if (root.powerNow <= 0) {
+            if (root.isCharging) {
+                root.timeRemainingText = "Charging (estimating...)";
+            } else {
+                root.timeRemainingText = "Calculating remaining time...";
+            }
+            return;
+        }
+
+        if (st === "discharging") {
+            const hoursFraction = root.energyNow / root.powerNow;
+            const totalMinutes = Math.max(1, Math.round(hoursFraction * 60));
+            const h = Math.floor(totalMinutes / 60);
+            const m = totalMinutes % 60;
+            if (h > 0) {
+                root.timeRemainingText = h + "h " + (m < 10 ? "0" + m : m) + "m remaining";
+            } else {
+                root.timeRemainingText = m + "m remaining";
+            }
+        } else if (st === "charging") {
+            const needed = Math.max(0, root.energyFull - root.energyNow);
+            const hoursFraction = needed / root.powerNow;
+            const totalMinutes = Math.max(1, Math.round(hoursFraction * 60));
+            const h = Math.floor(totalMinutes / 60);
+            const m = totalMinutes % 60;
+            if (h > 0) {
+                root.timeRemainingText = h + "h " + (m < 10 ? "0" + m : m) + "m until full";
+            } else {
+                root.timeRemainingText = m + "m until full";
+            }
+        } else if (st === "not charging") {
+            root.timeRemainingText = "Plugged in (not charging)";
+        } else {
+            root.timeRemainingText = root.batteryStatus;
+        }
+    }
+
+    // Initial queries on startup
     Component.onCompleted: {
         brightnessProc.command = ["brightnessctl", "-m", "info"];
         brightnessProc.running = true;
+        root.queryProfile();
     }
 
     // Read battery capacity directly from sysfs
@@ -71,18 +147,63 @@ Item {
         watchChanges: true
         onLoaded: {
             const st = text().trim();
+            root.batteryStatus = st;
             root.isCharging = (st === "Charging");
+            root.updateTimeRemaining();
         }
     }
 
-    // Periodic refresh for battery only (never touches brightness)
+    FileView {
+        id: energyNowFile
+        path: "/sys/class/power_supply/BAT0/energy_now"
+        watchChanges: true
+        onLoaded: {
+            const val = parseInt(text().trim(), 10);
+            if (!isNaN(val)) {
+                root.energyNow = val;
+                root.updateTimeRemaining();
+            }
+        }
+    }
+
+    FileView {
+        id: energyFullFile
+        path: "/sys/class/power_supply/BAT0/energy_full"
+        watchChanges: true
+        onLoaded: {
+            const val = parseInt(text().trim(), 10);
+            if (!isNaN(val)) {
+                root.energyFull = val;
+                root.updateTimeRemaining();
+            }
+        }
+    }
+
+    FileView {
+        id: powerNowFile
+        path: "/sys/class/power_supply/BAT0/power_now"
+        watchChanges: true
+        onLoaded: {
+            const val = parseInt(text().trim(), 10);
+            if (!isNaN(val)) {
+                root.powerNow = val;
+                root.updateTimeRemaining();
+            }
+        }
+    }
+
+    // Periodic refresh for battery and power profile (every 5 seconds)
     Timer {
-        interval: 10000
+        interval: 5000
         running: true
         repeat: true
         onTriggered: {
             capacityFile.reload();
             statusFile.reload();
+            energyNowFile.reload();
+            energyFullFile.reload();
+            powerNowFile.reload();
+            root.queryProfile();
         }
     }
 
