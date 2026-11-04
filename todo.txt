@@ -1,30 +1,11 @@
-1.	nvim setup, colorcode when writing code, show how far lines are at the top and bottom 		from curret line etc. get cli inside of nvim if possible, search multiple dir 
-	(fuzzy find). have multiple pages open. (look into vim motions!)
+1.	config grub style, 1. for desktop with win/linux split, 1. for laptop idk yet
 
-2.	config notification daemon
+2.	get cli anime watcher (ani-cli) -> https://github.com/pystardust/ani-cli
 
-3.	discover how to make applications pop up not in tiling mode but hover above, for 
-	settings, prism launcher, audio settings, steam. (like steam login page)
-
-4.	config grub style, 1. for desktop with win/linux split, 1. for laptop idk yet
-
-5.	replace current audio gui with better one or config this one.
-
-6.	get cli anime watcher (ani-cli) -> https://github.com/pystardust/ani-cli
-
-8.	improve wofi to be able to do math in it and use it to search strait to 
+3.	improve wofi to be able to do math in it and use it to search strait to 
 	browser (brave)
 
-9. 	fuzzy find files in terminal aka. better cd (can see/go to files outside of 
+4. 	fuzzy find files in terminal aka. better cd (can see/go to files outside of 
 	current dir)
 
-10.	color scheme for terminal text (entire system style changer depending on background similar to what mimoun has)
-
-11.	be able to select system themes that change all the config styles to match 
-	(need to make multiple seperate configs)
-
-12.	make file Manager remember last opened dir after close.
-
-13. rewrite current widets in quickshell, like bluetooth, wifi, audio, power menu etc. (make little music player where you can adjust volume and change song)
-
-14. remove random utils and apps from showing up in wofi, clean it up.
+5.	make file Manager remember last opened dir after close.
