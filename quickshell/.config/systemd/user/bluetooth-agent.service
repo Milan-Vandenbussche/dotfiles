@@ -1,0 +1,13 @@
+[Unit]
+Description=Bluetooth Headless Pairing Agent
+After=bluetooth.service
+PartOf=default.target
+
+[Service]
+Type=simple
+ExecStart=/bin/sh -c 'tail -f /dev/null | exec /usr/bin/bluetoothctl --agent NoInputNoOutput'
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=default.target

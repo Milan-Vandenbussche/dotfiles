@@ -9,3 +9,17 @@
 	current dir)
 
 5.	make file Manager remember last opened dir after close.
+
+6.	increase colorchanges in kitty, I want the name and dir shown left before
+what you actually type to have the same color as the accent (like the bar 
+color and window borders)
+
+7. improve search bar by adding websearch integration, changing the looks,
+making it appear towards the bottom of the screen right above where the 
+brightness and audio change pills appear. when nothing is typed there should be 
+no applications to choose from only apps appear when they get typed if that makes 
+sense.
+
+8. after installing and implementing the changes to make steam configurable
+the changes still havent been implemented correctly. no color change takes place
+at all. so we need to oncover the real issue and go from there.

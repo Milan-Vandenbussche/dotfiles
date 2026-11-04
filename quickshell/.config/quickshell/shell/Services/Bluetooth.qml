@@ -71,10 +71,19 @@ Item {
     }
 
     function togglePower() {
-        if (root.adapter) {
-            root.adapter.enabled = !root.adapter.enabled;
+        if (!root.isEnabled) {
+            Quickshell.execDetached(["rfkill", "unblock", "bluetooth"]);
+            if (root.adapter) {
+                root.adapter.enabled = true;
+            } else {
+                Quickshell.execDetached(["bluetoothctl", "power", "on"]);
+            }
         } else {
-            Quickshell.execDetached(["bluetoothctl", "power", root.isEnabled ? "off" : "on"]);
+            if (root.adapter) {
+                root.adapter.enabled = false;
+            } else {
+                Quickshell.execDetached(["bluetoothctl", "power", "off"]);
+            }
         }
     }
 
@@ -91,6 +100,7 @@ Item {
     }
 
     function startDiscovery() {
+        Quickshell.execDetached(["rfkill", "unblock", "bluetooth"]);
         if (root.adapter && root.isEnabled) {
             root.adapter.discovering = true;
             discoveryTimer.restart();
