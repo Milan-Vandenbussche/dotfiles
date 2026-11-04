@@ -15,6 +15,32 @@ Item {
         return base + "/theme/launcher-history.json";
     }
 
+    readonly property var blacklistedApps: [
+        "discord",
+        "blueman-manager",
+        "blueman",
+        "dunst",
+        "wofi",
+        "waybar",
+        "yad"
+    ]
+
+    function isBlacklisted(app): bool {
+        if (!app) return true;
+        const id = (app.id || "").toLowerCase().replace(/\.desktop$/, "");
+        const name = (app.name || "").toLowerCase();
+        const exec = (app.execString || "").toLowerCase();
+
+        for (let i = 0; i < root.blacklistedApps.length; i++) {
+            const b = root.blacklistedApps[i];
+            if (id === b || id.startsWith(b + "-") || name === b) return true;
+            if (exec.startsWith(b + " ") || exec === b || exec.includes("/" + b + " ") || exec.endsWith("/" + b)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     FileView {
         id: historyFile
         path: root.historyPath
@@ -23,7 +49,14 @@ Item {
             try {
                 const data = JSON.parse(text());
                 if (data && typeof data === "object") {
-                    root.historyMap = data;
+                    const clean = {};
+                    for (const k in data) {
+                        const lk = k.toLowerCase().replace(/\.desktop$/, "");
+                        if (!root.blacklistedApps.includes(lk)) {
+                            clean[k] = data[k];
+                        }
+                    }
+                    root.historyMap = clean;
                 }
             } catch (e) {
                 root.historyMap = {};
@@ -47,7 +80,7 @@ Item {
         const valid = [];
         for (let i = 0; i < raw.length; i++) {
             const a = raw[i];
-            if (a && !a.noDisplay && a.name && a.name.trim() !== "") {
+            if (a && !a.noDisplay && a.name && a.name.trim() !== "" && !root.isBlacklisted(a)) {
                 valid.push(a);
             }
         }
