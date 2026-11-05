@@ -17,6 +17,18 @@ PanelWindow {
 
     property int focusedIndex: 3 // Default focus on Shut Down (index 3)
 
+    function triggerIndex(idx) {
+        if (idx === 0) {
+            Power.logout();
+        } else if (idx === 1) {
+            Power.suspend();
+        } else if (idx === 2) {
+            Power.reboot();
+        } else if (idx === 3) {
+            Power.poweroff();
+        }
+    }
+
     Timer {
         id: focusTimer
         interval: 30
@@ -129,18 +141,6 @@ PanelWindow {
             }
         }
 
-        function triggerIndex(idx) {
-            if (idx === 0) {
-                Power.logout();
-            } else if (idx === 1) {
-                Power.suspend();
-            } else if (idx === 2) {
-                Power.reboot();
-            } else if (idx === 3) {
-                Power.poweroff();
-            }
-        }
-
         // Prevent clicking inside the card padding from closing
         MouseArea {
             anchors.fill: parent
@@ -194,7 +194,7 @@ PanelWindow {
                     hoverEnabled: true
                     cursorShape: Qt.PointingHandCursor
                     onEntered: root.focusedIndex = 0
-                    onClicked: root.triggerIndex(0)
+                    onClicked: Power.logout()
                 }
             }
 
@@ -240,7 +240,7 @@ PanelWindow {
                     hoverEnabled: true
                     cursorShape: Qt.PointingHandCursor
                     onEntered: root.focusedIndex = 1
-                    onClicked: root.triggerIndex(1)
+                    onClicked: Power.suspend()
                 }
             }
 
@@ -286,7 +286,7 @@ PanelWindow {
                     hoverEnabled: true
                     cursorShape: Qt.PointingHandCursor
                     onEntered: root.focusedIndex = 2
-                    onClicked: root.triggerIndex(2)
+                    onClicked: Power.reboot()
                 }
             }
 
@@ -332,7 +332,7 @@ PanelWindow {
                     hoverEnabled: true
                     cursorShape: Qt.PointingHandCursor
                     onEntered: root.focusedIndex = 3
-                    onClicked: root.triggerIndex(3)
+                    onClicked: Power.poweroff()
                 }
             }
         }
