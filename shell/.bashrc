@@ -16,7 +16,8 @@ export PATH=$PATH:/home/ciganycenter/.spicetify
 
 # Initialize zoxide (smarter cd that remembers frecent directories)
 if command -v zoxide >/dev/null 2>&1; then
-    eval "$(zoxide init bash --cmd cd)"
+    eval "$(zoxide init bash)"
+    alias cd="z"
 fi
 
 # Yazi file manager wrapper: cd to directory on exit
