@@ -171,6 +171,7 @@ fi
 
 # Dynamically reload GTK3/GTK4 styling and icon theme via GSettings
 if command -v gsettings >/dev/null 2>&1; then
+    gsettings set org.gnome.desktop.sound event-sounds false >/dev/null 2>&1 || true
     gsettings set org.gnome.desktop.interface color-scheme "prefer-dark" >/dev/null 2>&1 || true
 
     # Bounce icon-theme to invalidate icon cache in all running GTK apps
