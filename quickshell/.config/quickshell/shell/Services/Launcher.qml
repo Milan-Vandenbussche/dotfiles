@@ -131,6 +131,150 @@ Item {
         }
     }
 
+    function evaluateMath(raw) {
+        if (!raw) return null;
+        const s = raw.trim();
+        if (s.length === 0) return null;
+
+        // Must contain an operator (+ - * / % ^) or a math function call
+        const hasOp = /[\+\-\*\/\%\^]/.test(s);
+        const hasFunc = /\b(sqrt|cbrt|sin|cos|tan|asin|acos|atan|abs|round|floor|ceil|log|ln|exp)\s*\(/.test(s);
+        if (!hasOp && !hasFunc) return null;
+
+        // Reject dangerous characters or unauthorized identifiers
+        const stripped = s.replace(/\b(sqrt|cbrt|sin|cos|tan|asin|acos|atan|abs|round|floor|ceil|log|ln|exp|pi|e)\b/gi, "");
+        if (/[a-zA-Z_$]/.test(stripped)) return null;
+
+        let expr = s.replace(/\^/g, "**");
+        expr = expr.replace(/\bpi\b/gi, "Math.PI");
+        expr = expr.replace(/\be\b/gi, "Math.E");
+        expr = expr.replace(/\bln\s*\(/gi, "Math.log(");
+        expr = expr.replace(/\b(sqrt|cbrt|sin|cos|tan|asin|acos|atan|abs|round|floor|ceil|log|exp)\s*\(/gi, "Math.$1(");
+
+        try {
+            const fn = new Function('"use strict"; return (' + expr + ');');
+            const val = fn();
+            if (typeof val === "number" && !isNaN(val) && isFinite(val)) {
+                if (Number.isInteger(val)) return val.toString();
+                return parseFloat(val.toFixed(8)).toString();
+            }
+        } catch (e) {
+            return null;
+        }
+        return null;
+    }
+
+    function executeItem(item) {
+        if (!item) return;
+        if (item.type === "app") {
+            root.launch(item.app);
+        } else if (item.type === "math") {
+            Quickshell.execDetached(["wl-copy", item.value]);
+            root.open = false;
+        } else if (item.type === "web") {
+            const url = "https://search.brave.com/search?q=" + encodeURIComponent(item.value);
+            Quickshell.execDetached(["uwsm", "app", "--", "brave", url]);
+            root.open = false;
+        }
+    }
+
+    function queryLauncher(query) {
+        const raw = (query || "").trim();
+        if (raw === "") {
+            return [];
+        }
+
+        const items = [];
+
+        // 1. Math calculation
+        const mathRes = root.evaluateMath(raw);
+        if (mathRes !== null) {
+            items.push({
+                id: "math-result",
+                type: "math",
+                name: "= " + mathRes,
+                subtitle: "",
+                icon: "󰃬",
+                isApp: false,
+                value: mathRes
+            });
+        }
+
+        // 2. Filter desktop applications
+        const q = raw.toLowerCase();
+        const apps = root.allApps;
+        const matchedApps = [];
+
+        for (let i = 0; i < apps.length; i++) {
+            const a = apps[i];
+            const name = (a.name || "").toLowerCase();
+            const gen = (a.genericName || "").toLowerCase();
+            const comment = (a.comment || "").toLowerCase();
+            const exec = (a.execString || "").toLowerCase();
+
+            let match = false;
+            if (name.includes(q)) match = true;
+            else if (gen.includes(q)) match = true;
+            else if (comment.includes(q)) match = true;
+            else if (exec.includes(q)) match = true;
+            else if (a.keywords) {
+                for (let k of a.keywords) {
+                    if (k && k.toLowerCase().includes(q)) {
+                        match = true;
+                        break;
+                    }
+                }
+            }
+
+            if (match) {
+                matchedApps.push(a);
+            }
+        }
+
+        // Sort apps: exact prefix match first, then launch count, then alphabetical
+        matchedApps.sort((a, b) => {
+            const aStarts = a.name.toLowerCase().startsWith(q);
+            const bStarts = b.name.toLowerCase().startsWith(q);
+            if (aStarts && !bStarts) return -1;
+            if (!aStarts && bStarts) return 1;
+
+            const countA = root.getLaunchCount(a);
+            const countB = root.getLaunchCount(b);
+            if (countB !== countA) return countB - countA;
+
+            return a.name.localeCompare(b.name);
+        });
+
+        // Add top apps (max 6)
+        const limit = Math.min(matchedApps.length, 6);
+        for (let j = 0; j < limit; j++) {
+            const a = matchedApps[j];
+            items.push({
+                id: "app-" + (a.id || a.name),
+                type: "app",
+                name: a.name,
+                subtitle: a.comment || a.genericName || a.execString || "",
+                icon: a.icon || "",
+                isApp: true,
+                app: a,
+                value: ""
+            });
+        }
+
+        // 3. Web Search Option (Brave)
+        items.push({
+            id: "web-search",
+            type: "web",
+            name: "Search Brave for \"" + raw + "\"",
+            subtitle: "search.brave.com",
+            icon: "󰖟",
+            isApp: false,
+            value: raw
+        });
+
+        return items;
+    }
+
     function search(query) {
         const q = (query || "").trim().toLowerCase();
         const apps = root.allApps;

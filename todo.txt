@@ -2,8 +2,12 @@
 
 2.	get cli anime watcher (ani-cli) -> https://github.com/pystardust/ani-cli
 
-3.	improve wofi to be able to do math in it and use it to search strait to 
-	browser (brave)
+3.	[COMPLETED] improve quickshell search bar (formerly wofi):
+	- built-in math calculation with clipboard copy on Enter
+	- direct Brave web search integration (search.brave.com)
+	- positioned right above audio & brightness OSD pill
+	- clean empty state: apps only appear when typed and matched
+	- dynamic upward expansion and Matugen theme styling
 
 4. 	fuzzy find files in terminal aka. better cd (can see/go to files outside of 
 	current dir)
@@ -14,11 +18,7 @@
 what you actually type to have the same color as the accent (like the bar 
 color and window borders)
 
-7. improve search bar by adding websearch integration, changing the looks,
-making it appear towards the bottom of the screen right above where the 
-brightness and audio change pills appear. when nothing is typed there should be 
-no applications to choose from only apps appear when they get typed if that makes 
-sense.
+7.	[COMPLETED - Merged with #3 above]
 
 8. after installing and implementing the changes to make steam configurable
 the changes still havent been implemented correctly. no color change takes place
