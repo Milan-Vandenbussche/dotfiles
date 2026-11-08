@@ -2,22 +2,8 @@
 
 2.	get cli anime watcher (ani-cli) -> https://github.com/pystardust/ani-cli
 
-3.	[COMPLETED] improve quickshell search bar (formerly wofi):
-	- built-in math calculation with clipboard copy on Enter
-	- direct Brave web search integration (search.brave.com)
-	- positioned right above audio & brightness OSD pill
-	- clean empty state: apps only appear when typed and matched
-	- dynamic upward expansion and Matugen theme styling
-
 4. 	fuzzy find files in terminal aka. better cd (can see/go to files outside of 
 	current dir)
-
-5.	make file Manager remember last opened dir after close.
-
-6.	[COMPLETED] increase colorchanges in kitty, prompt name and dir (PS1)
-	colored with wallpaper accent (matches bar color and window borders)
-
-7.	[COMPLETED - Merged with #3 above]
 
 8. after installing and implementing the changes to make steam configurable
 the changes still havent been implemented correctly. no color change takes place

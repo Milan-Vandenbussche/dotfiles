@@ -1,0 +1,92 @@
+#!/usr/bin/env python3
+"""
+nautilus-tracker: Tracks active Nautilus folder locations via D-Bus
+and saves the last visited directory to ~/.local/state/nautilus/last-dir.
+"""
+import os
+import sys
+import urllib.parse
+from gi.repository import Gio, GLib
+
+STATE_DIR = os.path.expanduser(os.environ.get("XDG_STATE_HOME", "~/.local/state") + "/nautilus")
+STATE_FILE = os.path.join(STATE_DIR, "last-dir")
+
+def save_path(uri):
+    if not uri or not isinstance(uri, str):
+        return
+    if not uri.startswith("file://"):
+        return
+    path = urllib.parse.unquote(uri[7:])
+    if os.path.isdir(path):
+        try:
+            os.makedirs(STATE_DIR, exist_ok=True)
+            with open(STATE_FILE, "w", encoding="utf-8") as f:
+                f.write(path + "\n")
+        except Exception:
+            pass
+
+def check_initial_locations(bus):
+    try:
+        reply = bus.call_sync(
+            "org.freedesktop.FileManager1",
+            "/org/freedesktop/FileManager1",
+            "org.freedesktop.DBus.Properties",
+            "Get",
+            GLib.Variant("(ss)", ("org.freedesktop.FileManager1", "OpenWindowsWithLocations")),
+            GLib.VariantType("(v)"),
+            Gio.DBusCallFlags.NONE,
+            1000,
+            None
+        )
+        if reply:
+            val = reply.unpack()[0]
+            if isinstance(val, dict):
+                for win_path, uris in val.items():
+                    if uris and len(uris) > 0:
+                        save_path(uris[-1])
+    except Exception:
+        pass
+
+def on_properties_changed(connection, sender_name, object_path, interface_name, signal_name, parameters, user_data):
+    try:
+        iface, changed_props, invalidated = parameters.unpack()
+        if iface != "org.freedesktop.FileManager1":
+            return
+        if "OpenWindowsWithLocations" in changed_props:
+            windows = changed_props["OpenWindowsWithLocations"]
+            if isinstance(windows, dict):
+                for win_path, uris in windows.items():
+                    if uris and len(uris) > 0:
+                        save_path(uris[-1])
+    except Exception:
+        pass
+
+def main():
+    try:
+        bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
+    except Exception as e:
+        sys.exit(1)
+
+    # Initial query if Nautilus is already running
+    check_initial_locations(bus)
+
+    # Subscribe to D-Bus signal on FileManager1
+    bus.signal_subscribe(
+        None,
+        "org.freedesktop.DBus.Properties",
+        "PropertiesChanged",
+        "/org/freedesktop/FileManager1",
+        None,
+        Gio.DBusSignalFlags.NONE,
+        on_properties_changed,
+        None
+    )
+
+    loop = GLib.MainLoop()
+    try:
+        loop.run()
+    except (KeyboardInterrupt, SystemExit):
+        pass
+
+if __name__ == "__main__":
+    main()
