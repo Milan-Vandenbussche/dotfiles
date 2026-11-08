@@ -14,9 +14,8 @@
 
 5.	make file Manager remember last opened dir after close.
 
-6.	increase colorchanges in kitty, I want the name and dir shown left before
-what you actually type to have the same color as the accent (like the bar 
-color and window borders)
+6.	[COMPLETED] increase colorchanges in kitty, prompt name and dir (PS1)
+	colored with wallpaper accent (matches bar color and window borders)
 
 7.	[COMPLETED - Merged with #3 above]
 
