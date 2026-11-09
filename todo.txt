@@ -8,3 +8,14 @@ at all. so we need to oncover the real issue and go from there.
 
 4. I have a working clipboard but would like to make it better. currently I can 
 only copy and past, cant see clipboard history which would be nice.
+
+5. still need some styling changes for the quickshell. looks very 'ai'. 
+some examples are: 
+- the app search boarder should be thicker and even thickness all around
+  not just for the search app bar but everything(wallpaper selector, audio and brightness pill)
+- round top bar edges to look cleaner.
+- look for inspiration from other configs on how it should look
+
+6. automatically enter suspend mode when screen is closed down.
+
+7. 
