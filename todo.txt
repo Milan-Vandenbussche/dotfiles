@@ -2,6 +2,9 @@
 
 2.	get cli anime watcher (ani-cli) -> https://github.com/pystardust/ani-cli
 
-8. after installing and implementing the changes to make steam configurable
+3. after installing and implementing the changes to make steam configurable
 the changes still havent been implemented correctly. no color change takes place
 at all. so we need to oncover the real issue and go from there.
+
+4. I have a working clipboard but would like to make it better. currently I can 
+only copy and past, cant see clipboard history which would be nice.
